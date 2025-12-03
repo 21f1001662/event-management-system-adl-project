@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/AuthService';
 
+import { GoogleLoginDto, RefreshTokenDto } from '../dtos/auth.dto';
+
 export class AuthController {
   private static authService = new AuthService();
 
   static async login(req: Request, res: Response) {
     try {
-      const { id_token } = req.body;
+      const { id_token } = req.body as GoogleLoginDto;
       const result = await AuthController.authService.googleLogin(id_token, res);
       res.json({
         message: 'Login successful',
@@ -19,7 +21,8 @@ export class AuthController {
 
   static async refresh(req: Request, res: Response) {
     try {
-      const refreshToken = req.cookies?.Refresh || req.body.refresh_token;
+      const body = req.body as RefreshTokenDto;
+      const refreshToken = req.cookies?.Refresh || body.refresh_token;
       if (!refreshToken) {
         throw new Error('Refresh token is required');
       }
