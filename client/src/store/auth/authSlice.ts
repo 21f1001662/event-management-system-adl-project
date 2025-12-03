@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { AuthUserDto, TokensDto } from "../../api/auth/auth.dto";
+import type { AuthUserDto, TokensDto } from "@/api/auth/auth.dto";
 import { deleteItemFromSecureStore, saveItemToSecureStore } from "../secureStorage";
 
 export type AuthState = {
@@ -23,6 +23,9 @@ const authSlice = createSlice({
         setUser: (state, action: PayloadAction<AuthUserDto>) => {
             state.user = action.payload;
         },
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.accessToken = action.payload;
+        },
         logout: (state) => {
             state.accessToken = null;
             state.user = null;
@@ -31,5 +34,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setTokens, setUser, logout } = authSlice.actions;
+export const { setTokens, setUser, setAccessToken, logout } = authSlice.actions;
 export default authSlice.reducer;

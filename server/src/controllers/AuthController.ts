@@ -23,6 +23,8 @@ export class AuthController {
     try {
       const body = req.body as RefreshTokenDto;
       const refreshToken = req.cookies?.Refresh || body.refresh_token;
+      console.log("monkey")
+      console.log(refreshToken);
       if (!refreshToken) {
         throw new Error('Refresh token is required');
       }

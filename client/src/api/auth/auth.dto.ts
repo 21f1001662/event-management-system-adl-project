@@ -29,7 +29,7 @@ export interface RefreshTokensRequestDto {
 export interface RefreshTokensResponseDto {
     message: string;
     data: {
-        accessToken: string;
-        refreshToken: string;
+        tokens: TokensDto;
+        user: AuthUserDto;
     };
 }

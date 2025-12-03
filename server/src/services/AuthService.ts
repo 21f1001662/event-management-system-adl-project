@@ -28,7 +28,7 @@ export class AuthService {
         email: payload.email,
       });
     } else {
-        // Update name if changed? Optional.
+      // Update name if changed? Optional.
     }
 
     const tokens = this.signPayload({
@@ -56,7 +56,7 @@ export class AuthService {
     try {
       payload = jwt.verify(refreshToken, config.jwt.refreshSecret);
     } catch (e) {
-      throw new Error('Invalid Refresh Token');
+      throw new Error('Invalid Refresh Token....');
     }
 
     const user = await this.userService.getUser({ id: payload.id, include_refresh_token_hash: true });
@@ -102,7 +102,7 @@ export class AuthService {
 
   private setCookies(res: Response, accessToken: string, refreshToken: string) {
     const isProduction = config.nodeEnv === 'production';
-    
+
     res.cookie('Authentication', accessToken, {
       httpOnly: true,
       secure: isProduction,

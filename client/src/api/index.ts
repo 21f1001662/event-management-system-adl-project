@@ -78,7 +78,7 @@ apiClient.interceptors.response.use(
                     }
 
                     const response = await axios.post<RefreshTokensResponseDto>(
-                        `${API_HOST} /auth/refresh`,
+                        `${API_HOST}/auth/refresh`,
                         { refresh_token: rt },
                         {
                             headers: {
@@ -90,16 +90,16 @@ apiClient.interceptors.response.use(
 
                     store.dispatch(
                         setTokens({
-                            accessToken: response.data.data.accessToken,
-                            refreshToken: response.data.data.refreshToken,
+                            accessToken: response.data.data.tokens.accessToken,
+                            refreshToken: response.data.data.tokens.refreshToken,
                         })
                     );
 
                     isRefreshing = false;
-                    onRefreshed(response.data.data.accessToken);
+                    onRefreshed(response.data.data.tokens.accessToken);
 
                     // Retry original request with new token
-                    originalRequest.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
+                    originalRequest.headers.Authorization = `Bearer ${response.data.data.tokens.accessToken}`;
                     return apiClient(originalRequest);
                 } catch (error) {
                     isRefreshing = false;
