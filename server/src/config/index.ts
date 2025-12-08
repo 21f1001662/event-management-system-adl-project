@@ -22,4 +22,10 @@ export const config = {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
   },
   frontendHost: process.env.FRONTEND_HOST || 'http://localhost:5173',
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    region: process.env.AWS_REGION || 'us-east-1',
+    bucket: process.env.S3_BUCKET || '',
+  },
 };
