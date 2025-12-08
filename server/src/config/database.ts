@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { config } from './index';
 import { User } from '../entities/User';
+import { Event } from '../entities/Event';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -11,7 +12,7 @@ export const AppDataSource = new DataSource({
   database: config.db.database,
   synchronize: config.nodeEnv === 'development', // Set to false in production
   logging: config.nodeEnv === 'development',
-  entities: [User],
+  entities: [User, Event],
   subscribers: [],
   migrations: [],
 });
