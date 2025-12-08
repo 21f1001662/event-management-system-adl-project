@@ -76,6 +76,10 @@ export class GetEventsQueryDto {
 
     @IsOptional()
     @IsString()
+    organizerId?: string;
+
+    @IsOptional()
+    @IsString()
     orderBy?: string;
 
     @IsOptional()

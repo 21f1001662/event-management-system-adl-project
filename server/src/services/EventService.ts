@@ -15,7 +15,7 @@ export class EventService {
     }
 
     async getAllEvents(query: GetEventsQueryDto) {
-        const { page = 1, limit = 10, search, category, location, orderBy, order } = query;
+        const { page = 1, limit = 10, search, category, location, organizerId, orderBy, order } = query;
         const skip = (page - 1) * limit;
 
         let qb = this.eventRepository.createQueryBuilder('event');
@@ -38,6 +38,10 @@ export class EventService {
 
         if (location) {
             qb.andWhere('event.location ILIKE :location', { location: `%${location}%` });
+        }
+
+        if (organizerId) {
+            qb.andWhere('event.organizer_id = :organizerId', { organizerId });
         }
 
         qb = addOrdering(qb, orderBy || 'date', order || 'ASC');
