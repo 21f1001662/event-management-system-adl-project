@@ -6,6 +6,8 @@ import { UserRole } from '../entities/User';
 
 const router = Router();
 
-router.get('/own', authenticate, authorize([UserRole.ADMIN, UserRole.USER]), UserController.getOwnProfile);
+router.get('/own', authenticate, authorize([UserRole.ADMIN, UserRole.USER, UserRole.ORGANIZER]), UserController.getOwnProfile);
+router.get('/', authenticate, authorize([UserRole.ADMIN]), UserController.getAllUsers);
+router.post('/:id/verify', authenticate, authorize([UserRole.ADMIN]), UserController.verifyOrganizer);
 
 export default router;

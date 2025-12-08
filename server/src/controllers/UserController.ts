@@ -16,4 +16,30 @@ export class UserController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  static async getAllUsers(req: Request, res: Response) {
+    try {
+      const filters = req.query;
+      const result = await UserController.userService.getAllUsers(filters);
+      res.json({
+        message: 'Users retrieved successfully',
+        data: result,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  static async verifyOrganizer(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = await UserController.userService.verifyOrganizer(id);
+      res.json({
+        message: 'Organizer verified successfully',
+        data: user,
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }

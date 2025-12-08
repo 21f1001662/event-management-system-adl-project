@@ -12,6 +12,7 @@ import {
 export enum UserRole {
   ADMIN = 'admin',
   USER = 'user',
+  ORGANIZER = 'organizer',
 }
 
 @Entity('user')
@@ -46,6 +47,20 @@ export class User extends BaseEntity {
     default: [UserRole.USER],
   })
   roles: UserRole[];
+
+  @Column({
+    name: 'bio',
+    type: 'text',
+    nullable: true,
+  })
+  bio?: string;
+
+  @Column({
+    name: 'verified',
+    type: 'boolean',
+    default: false,
+  })
+  verified: boolean;
 
   @Column({
     name: 'rt_hash',

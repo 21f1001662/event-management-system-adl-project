@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AuthService } from '../services/AuthService';
 
 import { GoogleLoginDto, RefreshTokenDto } from '../dtos/auth.dto';
+import { OrganizerRegisterDto } from '../dtos/user.dto';
 
 export class AuthController {
   private static authService = new AuthService();
@@ -35,6 +36,20 @@ export class AuthController {
       });
     } catch (error: any) {
       res.status(401).json({ message: error.message });
+    }
+  }
+
+  static async registerOrganizer(req: Request, res: Response) {
+    try {
+      const { id_token, bio } = req.body as OrganizerRegisterDto;
+      if (!id_token) throw new Error('ID token is required');
+      const result = await AuthController.authService.registerOrganizer(id_token, bio || '', res);
+      res.json({
+        message: 'Organizer registered successfully',
+        data: result,
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
     }
   }
 }

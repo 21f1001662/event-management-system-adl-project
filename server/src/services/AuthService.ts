@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { UserService } from './UserService';
 import { hashSHA256 } from '../utils/hash';
+import { UserRole } from '../entities/User';
 
 export class AuthService {
   private userService = new UserService();
@@ -116,5 +117,50 @@ export class AuthService {
       sameSite: isProduction ? 'none' : 'lax',
       domain: isProduction ? new URL(config.frontendHost).hostname : undefined,
     });
+  }
+
+  async registerOrganizer(idToken: string, bio: string, res: Response) {
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken,
+      audience: config.google.clientId,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email) {
+      throw new Error('Invalid Google Token');
+    }
+
+    let user = await this.userService.getUser({ email: payload.email });
+
+    if (user) {
+      throw new Error('User already exists');
+    }
+
+    user = await this.userService.createUser({
+      name: payload.name || 'Organizer',
+      email: payload.email,
+      roles: [UserRole.ORGANIZER],
+      bio,
+      verified: false,
+    });
+
+    const tokens = this.signPayload({
+      id: user.id,
+      email: user.email,
+      roles: user.roles,
+    });
+
+    await this.userService.setTokenHash(
+      user.id,
+      hashSHA256(tokens.accessToken, config.jwt.accessSecret),
+      hashSHA256(tokens.refreshToken, config.jwt.refreshSecret)
+    );
+
+    this.setCookies(res, tokens.accessToken, tokens.refreshToken);
+
+    return {
+      user,
+      tokens,
+    };
   }
 }
