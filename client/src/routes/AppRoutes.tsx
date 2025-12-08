@@ -6,6 +6,8 @@ import OrganizerRegister from '../pages/OrganizerRegister';
 import AdminDashboard from '@/pages/AdminDashboard';
 import OrganizerDashboard from '@/pages/OrganizerDashboard';
 import CreateEvent from '@/pages/CreateEvent';
+import EventDetails from '@/pages/EventDetails';
+import EditEvent from '@/pages/EditEvent';
 import type { RootState } from '@/store';
 
 const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
@@ -45,6 +47,8 @@ export default function AppRoutes() {
             <Route element={<ProtectedRoute allowedRoles={['organizer']} />}>
                 <Route path="/organizer" element={<OrganizerDashboard />} />
                 <Route path="/organizer/create-event" element={<CreateEvent />} />
+                <Route path="/organizer/events/:id" element={<EventDetails />} />
+                <Route path="/organizer/events/:id/edit" element={<EditEvent />} />
             </Route>
         </Routes>
     );

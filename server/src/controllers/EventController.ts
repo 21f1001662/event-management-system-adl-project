@@ -31,4 +31,41 @@ export class EventController {
             res.status(500).json({ message: error.message });
         }
     }
+    static async getEventById(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const event = await EventController.eventService.getEventById(id);
+            res.json({
+                message: 'Event retrieved successfully',
+                data: event,
+            });
+        } catch (error: any) {
+            if (error.message === 'Event not found') {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
+
+    static async updateEvent(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const organizerId = (req as any).user.id;
+            const data = req.body;
+            const event = await EventController.eventService.updateEvent(id, data, organizerId);
+            res.json({
+                message: 'Event updated successfully',
+                data: event,
+            });
+        } catch (error: any) {
+            if (error.message === 'Event not found') {
+                res.status(404).json({ message: error.message });
+            } else if (error.message === 'Unauthorized to update this event') {
+                res.status(403).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }

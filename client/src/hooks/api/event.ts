@@ -22,3 +22,24 @@ export function useCreateEvent() {
         },
     });
 }
+
+import { getEventById, updateEvent } from "@/api/event";
+
+export function useGetEvent(id: string) {
+    return useQuery({
+        queryKey: ["events", id],
+        queryFn: () => getEventById(id),
+        enabled: !!id,
+    });
+}
+
+export function useUpdateEvent() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: any }) => updateEvent(id, data),
+        onSuccess: (_, { id }) => {
+            queryClient.invalidateQueries({ queryKey: ["events"] });
+            queryClient.invalidateQueries({ queryKey: ["events", id] });
+        },
+    });
+}

@@ -122,7 +122,12 @@ const OrganizerDashboard = () => {
                         ) : (
                             <div className="events-grid">
                                 {eventsData?.data.events.map((event) => (
-                                    <div key={event.id} className="event-card">
+                                    <div
+                                        key={event.id}
+                                        className="event-card"
+                                        onClick={() => navigate(`/organizer/events/${event.id}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <div className="event-thumbnail">
                                             {event.image_url ? (
                                                 <img

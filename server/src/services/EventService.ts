@@ -57,4 +57,34 @@ export class EventService {
             totalPages: Math.ceil(total / limit),
         };
     }
+    async getEventById(id: string) {
+        const event = await this.eventRepository.findOne({
+            where: { id },
+            relations: ['organizer'],
+            select: {
+                organizer: {
+                    id: true,
+                    name: true,
+                    email: true
+                }
+            }
+        });
+
+        if (!event) {
+            throw new Error('Event not found');
+        }
+
+        return event;
+    }
+
+    async updateEvent(id: string, data: Partial<CreateEventDto>, organizerId: string) {
+        const event = await this.getEventById(id);
+
+        if (event.organizer_id !== organizerId) {
+            throw new Error('Unauthorized to update this event');
+        }
+
+        Object.assign(event, data);
+        return await this.eventRepository.save(event);
+    }
 }

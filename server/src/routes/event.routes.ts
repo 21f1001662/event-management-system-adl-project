@@ -22,4 +22,14 @@ router.get(
     EventController.getAllEvents
 );
 
+router.get('/:id', EventController.getEventById);
+
+router.put(
+    '/:id',
+    authenticate,
+    authorize([UserRole.ORGANIZER]),
+    validationMiddleware(CreateEventDto), // Reusing CreateEventDto for full updates, or use UpdateEventDto for partial
+    EventController.updateEvent
+);
+
 export default router;

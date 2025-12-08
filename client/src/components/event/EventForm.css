@@ -1,0 +1,109 @@
+/* Form Styles */
+.form-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 80px; /* Space for sticky footer */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4a5568;
+}
+
+.form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    background-color: white;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: #4c51bf;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+}
+
+.form-textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* File Upload */
+.file-upload-area {
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.file-upload-area:hover {
+    border-color: #4c51bf;
+    background-color: #ebf4ff;
+}
+
+.upload-preview {
+    margin-top: 10px;
+    max-height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    background-color: #edf2f7;
+}
+
+.upload-preview img, .upload-preview video {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+/* Sticky Footer */
+.sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 15px 30px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 -4px 6px rgba(0,0,0,0.05);
+    z-index: 100;
+}
+
+.submit-btn {
+    background-color: #4c51bf;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #434190;
+}
+
+.submit-btn:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}

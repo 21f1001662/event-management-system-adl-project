@@ -49,6 +49,50 @@ export class CreateEventDto {
     capacity: number;
 }
 
+export class UpdateEventDto {
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    title?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    short_description?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    description?: string;
+
+    @IsOptional()
+    @IsDateString()
+    @IsNotEmpty()
+    date?: string;
+
+    @IsOptional()
+    @IsUrl()
+    image_url?: string;
+
+    @IsOptional()
+    @IsUrl()
+    video_url?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    location?: string;
+
+    @IsOptional()
+    @IsEnum(EventCategory)
+    category?: EventCategory;
+
+    @IsOptional()
+    @IsInt()
+    @Min(1)
+    capacity?: number;
+}
+
 export class GetEventsQueryDto {
     @IsOptional()
     @Type(() => Number)
