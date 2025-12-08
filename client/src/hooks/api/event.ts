@@ -9,3 +9,16 @@ export function useGetAllEvents(params: GetEventsParams): UseQueryResult<GetEven
         queryFn: () => getAllEvents(params),
     });
 }
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createEvent } from "@/api/event";
+
+export function useCreateEvent() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: createEvent,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["events"] });
+        },
+    });
+}

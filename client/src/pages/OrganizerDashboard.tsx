@@ -92,7 +92,7 @@ const OrganizerDashboard = () => {
                     <>
                         <div className="content-header">
                             <h1 className="page-title">My Events</h1>
-                            <button className="create-btn">Create Event</button>
+                            <button className="create-btn" onClick={() => navigate('/organizer/create-event')}>Create Event</button>
                         </div>
 
                         <div className="controls-section">
