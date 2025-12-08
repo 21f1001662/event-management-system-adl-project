@@ -2,6 +2,11 @@ export interface GoogleLoginRequestDto {
     id_token: string;
 }
 
+export interface OrganizerRegisterRequestDto {
+    id_token: string;
+    bio: string;
+}
+
 export interface TokensDto {
     accessToken: string;
     refreshToken: string;
@@ -12,6 +17,8 @@ export interface AuthUserDto {
     name: string;
     email: string;
     roles: string[];
+    bio?: string;
+    verified?: boolean;
 }
 
 export interface GoogleLoginResponseDto {

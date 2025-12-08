@@ -18,7 +18,15 @@ export default function Login() {
                     onSuccess: (data) => {
                         dispatch(setTokens(data.data.tokens));
                         dispatch(setUser(data.data.user));
-                        navigate('/');
+
+                        const roles = data.data.user.roles;
+                        if (roles.includes('admin')) {
+                            navigate('/admin');
+                        } else if (roles.includes('organizer')) {
+                            navigate('/organizer');
+                        } else {
+                            navigate('/');
+                        }
                     },
                     onError: (error) => {
                         console.error('Login failed:', error);
