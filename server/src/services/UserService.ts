@@ -71,7 +71,7 @@ export class UserService {
       throw new Error('User is not an organizer');
     }
 
-    user.verified = true;
+    user.verified = !user.verified;
     return await this.userRepository.save(user);
   }
 

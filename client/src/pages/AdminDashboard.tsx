@@ -1,34 +1,215 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { logout } from '@/store/auth/authSlice';
-import type { RootState } from '@/store';
 import { useNavigate } from 'react-router-dom';
+import { useGetAllUsers, useVerifyOrganizer } from '@/hooks/api/user';
+import './AdminDashboard.css';
+import { Menu, X, Users, Calendar, LogOut } from 'lucide-react';
 
 const AdminDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state: RootState) => state.auth.user);
+
+    // UI State
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<'users' | 'events'>('users');
+
+    // Users Filter State
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
+    const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [roleFilter, setRoleFilter] = useState('');
+
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1); // Reset to page 1 on search
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    // Data Fetching
+    const { data: usersData, isLoading } = useGetAllUsers({
+        page,
+        limit,
+        search: debouncedSearch,
+        role: roleFilter
+    });
+
+    const { mutate: verifyOrganizer } = useVerifyOrganizer();
 
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
     };
 
+    const handleVerifyToggle = (userId: string) => {
+        verifyOrganizer(userId);
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <div className="p-8 bg-white rounded shadow-md w-96">
-                <h1 className="mb-4 text-2xl font-bold text-center">Admin Dashboard</h1>
-                <div className="mb-4">
-                    <p><strong>Name:</strong> {user?.name}</p>
-                    <p><strong>Email:</strong> {user?.email}</p>
-                    <p><strong>Role:</strong> {user?.roles.join(', ')}</p>
+        <div className="admin-container">
+            {/* Mobile Toggle */}
+            <button
+                className="mobile-menu-toggle"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+                {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            {/* Sidebar */}
+            <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+                <div className="sidebar-header">
+                    <h2 className="sidebar-title">Admin Panel</h2>
                 </div>
-                <button
-                    onClick={handleLogout}
-                    className="w-full px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
-                >
-                    Logout
-                </button>
-            </div>
+
+                <nav className="sidebar-nav">
+                    <div
+                        className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
+                        onClick={() => { setActiveTab('users'); setSidebarOpen(false); }}
+                    >
+                        <Users size={20} />
+                        Users
+                    </div>
+                    <div
+                        className={`nav-item ${activeTab === 'events' ? 'active' : ''}`}
+                        onClick={() => { setActiveTab('events'); setSidebarOpen(false); }}
+                    >
+                        <Calendar size={20} />
+                        Events
+                    </div>
+                </nav>
+
+                <div className="sidebar-footer">
+                    <button onClick={handleLogout} className="logout-btn">
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <LogOut size={18} />
+                            Logout
+                        </div>
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className="admin-content">
+                {activeTab === 'users' ? (
+                    <>
+                        <div className="content-header">
+                            <h1 className="page-title">User Management</h1>
+                        </div>
+
+                        <div className="controls-section">
+                            <div className="search-box">
+                                <input
+                                    type="text"
+                                    placeholder="Search users by name or email..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="filter-box">
+                                <select
+                                    value={roleFilter}
+                                    onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
+                                >
+                                    <option value="">All Roles</option>
+                                    <option value="user">User</option>
+                                    <option value="organizer">Organizer</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="table-container">
+                            {isLoading ? (
+                                <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
+                            ) : (
+                                <table className="users-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {usersData?.data.users.map((user) => (
+                                            <tr key={user.id}>
+                                                <td>{user.name}</td>
+                                                <td>{user.email}</td>
+                                                <td>
+                                                    {user.roles.map(role => (
+                                                        <span key={role} className={`role-badge role-${role}`}>
+                                                            {role}
+                                                        </span>
+                                                    ))}
+                                                </td>
+                                                <td>
+                                                    {user.roles.includes('organizer') ? (
+                                                        <span className={`status-badge status-${user.verified ? 'verified' : 'unverified'}`}>
+                                                            {user.verified ? 'Verified' : 'Unverified'}
+                                                        </span>
+                                                    ) : '-'}
+                                                </td>
+                                                <td>
+                                                    {user.roles.includes('organizer') && (
+                                                        <label className="toggle-switch">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={user.verified}
+                                                                onChange={() => handleVerifyToggle(user.id)}
+                                                            />
+                                                            <span className="slider"></span>
+                                                        </label>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {usersData?.data.users.length === 0 && (
+                                            <tr>
+                                                <td colSpan={5} style={{ textAlign: 'center' }}>No users found</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+
+                        {/* Pagination */}
+                        {usersData && usersData.data.totalPages > 1 && (
+                            <div className="pagination">
+                                <button
+                                    className="pagination-btn"
+                                    disabled={page === 1}
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                >
+                                    Previous
+                                </button>
+                                <span className="page-info">
+                                    Page {page} of {usersData.data.totalPages}
+                                </span>
+                                <button
+                                    className="pagination-btn"
+                                    disabled={page === usersData.data.totalPages}
+                                    onClick={() => setPage(p => Math.min(usersData.data.totalPages, p + 1))}
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="content-header">
+                        <h1 className="page-title">Events Management</h1>
+                        <p style={{ marginTop: '20px', color: '#666' }}>Events management module coming soon...</p>
+                    </div>
+                )}
+            </main>
         </div>
     );
 };
