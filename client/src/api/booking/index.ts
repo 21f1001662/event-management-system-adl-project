@@ -14,3 +14,8 @@ export async function cancelTicket(bookingId: string): Promise<any> {
     const { data } = await apiClient.delete(`/bookings/${bookingId}`);
     return data;
 }
+
+export async function getEventParticipants(eventId: string, params: any): Promise<any> {
+    const { data } = await apiClient.get(`/bookings/event/${eventId}/participants`, { params });
+    return data;
+}

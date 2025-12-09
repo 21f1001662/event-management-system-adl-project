@@ -4,11 +4,14 @@ import { useGetEvent } from '@/hooks/api/event';
 import { Loader2, Calendar, MapPin, Users, Edit, User, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import './EventDetails.css';
 
+import ParticipantsModal from '@/components/organizer/ParticipantsModal';
+
 const EventDetails = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { data: event, isLoading, error } = useGetEvent(id || '');
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [showParticipantsModal, setShowParticipantsModal] = useState(false);
 
     if (isLoading) {
         return (
@@ -55,9 +58,9 @@ const EventDetails = () => {
                             </div>
                         </div>
                         <div className="header-actions">
-                            <button className="action-btn secondary" onClick={() => navigate(`/organizer/events/${id}/participants`)}>
+                            <button className="action-btn secondary" onClick={() => setShowParticipantsModal(true)}>
                                 <Users size={18} />
-                                Participants
+                                Participants ({event.attendees_count})
                             </button>
                             <button className="action-btn primary" onClick={() => navigate(`/organizer/events/${id}/edit`)}>
                                 <Edit size={18} />
@@ -147,6 +150,13 @@ const EventDetails = () => {
                     </aside>
                 </div>
             </main>
+
+            {showParticipantsModal && (
+                <ParticipantsModal
+                    eventId={id || ''}
+                    onClose={() => setShowParticipantsModal(false)}
+                />
+            )}
         </div>
     );
 };
