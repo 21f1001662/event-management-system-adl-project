@@ -5,6 +5,7 @@ import type { RootState } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, Calendar, User, LogOut, Ticket } from 'lucide-react';
 import UserEvents from '@/components/dashboard/user/UserEvents';
+import UserBookings from '@/components/dashboard/user/UserBookings';
 import './OrganizerDashboard.css'; // Reusing Organizer styles for now
 
 const UserDashboard = () => {
@@ -74,12 +75,7 @@ const UserDashboard = () => {
             {/* Main Content */}
             <main className="organizer-content">
                 {activeTab === 'events' && <UserEvents />}
-                {activeTab === 'bookings' && (
-                    <div className="content-header">
-                        <h1 className="page-title">My Bookings</h1>
-                        <p>Bookings functionality coming soon...</p>
-                    </div>
-                )}
+                {activeTab === 'bookings' && <UserBookings />}
                 {activeTab === 'profile' && (
                     <div className="content-header">
                         <h1 className="page-title">Profile</h1>

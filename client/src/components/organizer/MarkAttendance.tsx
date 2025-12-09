@@ -1,27 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getTicketByNumber, markAttendance } from '../../api/event';
+import { useSearchParams } from 'react-router-dom';
 import './MarkAttendance.css';
 
 const MarkAttendance: React.FC = () => {
-    const [ticketNumber, setTicketNumber] = useState('');
+    const [searchParams] = useSearchParams();
+    const ticketNumberParam = searchParams.get('ticket_number');
+
+    const [ticketNumber, setTicketNumber] = useState(ticketNumberParam || '');
     const [ticketDetails, setTicketDetails] = useState<any>(null);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleCheckTicket = async () => {
+    const handleCheckTicket = useCallback(async (number: string = ticketNumber) => {
+        if (!number) return;
         setLoading(true);
         setError('');
         setTicketDetails(null);
         try {
-            const data = await getTicketByNumber(Number(ticketNumber));
+            const data = await getTicketByNumber(Number(number));
             setTicketDetails(data);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Error fetching ticket details');
         } finally {
             setLoading(false);
         }
-    };
+    }, [ticketNumber]);
+
+    useEffect(() => {
+        if (ticketNumberParam) {
+            handleCheckTicket(ticketNumberParam);
+        }
+    }, [ticketNumberParam, handleCheckTicket]);
 
     const handleMarkAttendance = async (status: string) => {
         setLoading(true);
@@ -50,7 +61,7 @@ const MarkAttendance: React.FC = () => {
                     value={ticketNumber}
                     onChange={(e) => setTicketNumber(e.target.value)}
                 />
-                <button onClick={handleCheckTicket} disabled={loading || !ticketNumber}>
+                <button onClick={() => handleCheckTicket()} disabled={loading || !ticketNumber}>
                     {loading ? 'Checking...' : 'Check Ticket'}
                 </button>
             </div>

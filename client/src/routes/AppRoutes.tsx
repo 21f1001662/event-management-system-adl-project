@@ -24,7 +24,7 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
         if (!hasRole) {
             // Redirect to appropriate dashboard based on role or home
             if (user.roles.includes('admin')) return <Navigate to="/admin" replace />;
-            if (user.roles.includes('organizer')) return <Navigate to="/organizer" replace />;
+            if (user.roles.includes('organizer')) return <Navigate to="/organizer/dashboard" replace />;
             if (user.roles.includes('user')) return <Navigate to="/user/dashboard" replace />;
             return <Navigate to="/" replace />;
         }
@@ -50,7 +50,8 @@ export default function AppRoutes() {
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={['organizer']} />}>
-                <Route path="/organizer" element={<OrganizerDashboard />} />
+                <Route path="/organizer" element={<Navigate to="/organizer/dashboard" replace />} />
+                <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
                 <Route path="/organizer/create-event" element={<CreateEvent />} />
                 <Route path="/organizer/events/:id" element={<EventDetails />} />
                 <Route path="/organizer/events/:id/edit" element={<EditEvent />} />

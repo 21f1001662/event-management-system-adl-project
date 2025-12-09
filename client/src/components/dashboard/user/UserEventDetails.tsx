@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetEvent } from '@/hooks/api/event';
 import { useBookTicket, useGetMyTickets, useCancelTicket } from '@/hooks/api/booking';
-import { Loader2, Calendar, MapPin, Users, ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, User, Ticket, XCircle } from 'lucide-react';
+import { Loader2, Calendar, MapPin, ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, User, Ticket, XCircle } from 'lucide-react';
 import '@/pages/EventDetails.css'; // Reuse existing styles
 
 const UserEventDetails = () => {

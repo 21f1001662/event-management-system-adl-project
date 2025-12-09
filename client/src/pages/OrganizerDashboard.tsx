@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/auth/authSlice';
 import type { RootState } from '@/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGetAllEvents } from '@/hooks/api/event';
 import './OrganizerDashboard.css';
 import { Menu, X, Calendar, User, LogOut, Image as ImageIcon, ClipboardCheck } from 'lucide-react';
@@ -12,10 +12,14 @@ const OrganizerDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state: RootState) => state.auth.user);
+    const [searchParams] = useSearchParams();
+    const tabParam = searchParams.get('tab');
 
     // UI State
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<'events' | 'profile' | 'mark-attendance'>('events');
+    const [activeTab, setActiveTab] = useState<'events' | 'profile' | 'mark-attendance'>(
+        (tabParam === 'mark-attendance' ? 'mark-attendance' : 'events') as 'events' | 'profile' | 'mark-attendance'
+    );
 
     // Events Filter State
     const [search, setSearch] = useState('');
