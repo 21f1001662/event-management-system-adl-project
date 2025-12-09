@@ -16,9 +16,14 @@ export async function getEventById(id: string): Promise<any> {
     return data.data;
 }
 
-export async function updateEvent(id: string, eventData: any): Promise<any> {
-    const { data } = await apiClient.put(`/events/${id}`, eventData);
-    return data.data;
+export async function updateEvent(id: string, data: any): Promise<any> {
+    const { data: response } = await apiClient.put(`/events/${id}`, data);
+    return response.data;
+}
+
+export async function deleteEvent(id: string): Promise<any> {
+    const { data } = await apiClient.delete(`/events/${id}`);
+    return data;
 }
 
 export async function getTicketByNumber(ticketNumber: number): Promise<any> {

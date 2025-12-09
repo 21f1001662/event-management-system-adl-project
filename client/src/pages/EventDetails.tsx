@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetEvent } from '@/hooks/api/event';
-import { Loader2, Calendar, MapPin, Users, Edit, User, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { deleteEvent } from '@/api/event';
+import { Loader2, Calendar, MapPin, Users, Edit, User, ArrowLeft, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import './EventDetails.css';
 
 import ParticipantsModal from '@/components/organizer/ParticipantsModal';
@@ -31,6 +32,18 @@ const EventDetails = () => {
 
     const nextSlide = () => setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
     const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this event? This action cannot be undone and will cancel all bookings.')) {
+            try {
+                await deleteEvent(id || '');
+                navigate('/organizer');
+            } catch (error) {
+                console.error('Error deleting event:', error);
+                alert('Failed to delete event');
+            }
+        }
+    };
 
     return (
         <div className="event-details-container">
@@ -65,6 +78,10 @@ const EventDetails = () => {
                             <button className="action-btn primary" onClick={() => navigate(`/organizer/events/${id}/edit`)}>
                                 <Edit size={18} />
                                 Edit Event
+                            </button>
+                            <button className="action-btn danger" onClick={handleDelete} style={{ backgroundColor: '#dc3545', color: 'white', border: 'none' }}>
+                                <Trash2 size={18} />
+                                Delete
                             </button>
                         </div>
                     </div>
