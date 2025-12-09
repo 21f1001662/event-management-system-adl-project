@@ -5,6 +5,8 @@ import { Event } from '../entities/Event';
 
 import { EventAttendee } from '../entities/EventAttendee';
 
+import { Review } from '../entities/Review';
+
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: config.db.host,
@@ -14,7 +16,7 @@ export const AppDataSource = new DataSource({
   database: config.db.database,
   synchronize: config.nodeEnv === 'development', // Set to false in production
   logging: config.nodeEnv === 'development',
-  entities: [User, Event, EventAttendee],
+  entities: [User, Event, EventAttendee, Review],
   subscribers: [],
   migrations: [],
 });

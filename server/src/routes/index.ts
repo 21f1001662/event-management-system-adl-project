@@ -5,6 +5,7 @@ import healthRoutes from './health.routes';
 import eventRoutes from './event.routes';
 import bookingRoutes from './booking.routes';
 import storageRoutes from './storage.routes';
+import reviewRoutes from './review.routes';
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use('/health', healthRoutes);
 router.use('/events', eventRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/storage', storageRoutes);
+router.use('/reviews', reviewRoutes);
 
 export default router;
