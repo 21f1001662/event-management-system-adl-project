@@ -69,6 +69,12 @@ export class Event extends BaseEntity {
     @Column({ type: 'int', default: 0 })
     waitlist_count: number;
 
+    @Column({ type: 'int', default: 0 })
+    review_count: number;
+
+    @Column({ type: 'float', default: 0 })
+    avg_rating: number;
+
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'organizer_id' })
     organizer: User;
