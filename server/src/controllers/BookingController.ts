@@ -60,4 +60,26 @@ export class BookingController {
             }
         }
     }
+
+    static async markAttendance(req: Request, res: Response) {
+        try {
+            const { ticket_number, status } = req.body;
+
+            if (!ticket_number || !status) {
+                return res.status(400).json({ message: 'Ticket number and status are required' });
+            }
+
+            const result = await BookingController.bookingService.markAttendance(ticket_number, status);
+            res.json({
+                message: 'Attendance marked successfully',
+                data: result,
+            });
+        } catch (error: any) {
+            if (error.message === 'Booking not found') {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }

@@ -1,7 +1,6 @@
 import { AppDataSource } from '../config/database';
-import { EventAttendee, AttendeeStatus } from '../entities/EventAttendee';
+import { EventAttendee, AttendeeStatus, AttendanceEnum } from '../entities/EventAttendee';
 import { Event } from '../entities/Event';
-import { User } from '../entities/User';
 import { addOrdering, addPagination } from '../utils/query.utils';
 
 export class BookingService {
@@ -171,5 +170,18 @@ export class BookingService {
 
             return { message: 'Booking cancelled successfully' };
         });
+    }
+
+    async markAttendance(ticketNumber: number, status: AttendanceEnum) {
+        const booking = await this.attendeeRepository.findOne({
+            where: { ticket_number: ticketNumber },
+        });
+
+        if (!booking) {
+            throw new Error('Booking not found');
+        }
+
+        booking.attendance = status;
+        return await this.attendeeRepository.save(booking);
     }
 }

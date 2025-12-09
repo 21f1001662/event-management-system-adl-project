@@ -18,11 +18,20 @@ export enum AttendeeStatus {
     CANCELLED = 'cancelled',
 }
 
+export enum AttendanceEnum {
+    PENDING = 'Pending',
+    PRESENT = 'Present',
+    ABSENT = 'Absent',
+}
+
 @Entity('event_attendee')
 @Index(['user_id', 'event_id'], { unique: true }) // Prevent duplicate bookings
 export class EventAttendee extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
+    @Column({ type: 'int', generated: 'increment', unique: true })
+    ticket_number: number;
 
     @Column({ name: 'user_id' })
     user_id: string;
@@ -44,6 +53,13 @@ export class EventAttendee extends BaseEntity {
         default: AttendeeStatus.CONFIRMED,
     })
     status: AttendeeStatus;
+
+    @Column({
+        type: 'enum',
+        enum: AttendanceEnum,
+        default: AttendanceEnum.PENDING,
+    })
+    attendance: AttendanceEnum;
 
     @Column({ type: 'int', nullable: true })
     waitlist_position: number | null;
