@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGetEvent } from '@/hooks/api/event';
 import { deleteEvent } from '@/api/event';
 import { Loader2, Calendar, MapPin, Users, Edit, User, ArrowLeft, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import './EventDetails.css';
 
 import ParticipantsModal from '@/components/organizer/ParticipantsModal';
@@ -126,8 +127,8 @@ const EventDetails = () => {
                         <div className="description-section">
                             <h2>About this Event</h2>
                             <p className="short-desc">{event.short_description}</p>
-                            <div className="full-desc">
-                                {event.description}
+                            <div className="full-desc" data-color-mode="light">
+                                <ReactMarkdown>{event.description}</ReactMarkdown>
                             </div>
                         </div>
                     </div>

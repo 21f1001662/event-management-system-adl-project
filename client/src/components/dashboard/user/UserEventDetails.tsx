@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGetEvent } from '@/hooks/api/event';
 import { useBookTicket, useGetMyTickets, useCancelTicket } from '@/hooks/api/booking';
 import { Loader2, Calendar, MapPin, ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, User, Ticket, XCircle } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import '@/pages/EventDetails.css'; // Reuse existing styles
 
 const UserEventDetails = () => {
@@ -184,8 +185,8 @@ const UserEventDetails = () => {
                         <div className="description-section">
                             <h2>About this Event</h2>
                             <p className="short-desc">{event.short_description}</p>
-                            <div className="full-desc">
-                                {event.description}
+                            <div className="full-desc" data-color-mode="light">
+                                <ReactMarkdown>{event.description}</ReactMarkdown>
                             </div>
                         </div>
                     </div>

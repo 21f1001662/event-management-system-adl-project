@@ -1,8 +1,83 @@
 .event-details-container {
-    min-height: 100vh;
-    background-color: #f8f9fa;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
     font-family: 'Inter', sans-serif;
 }
+
+.full-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #2d3748;
+}
+
+.full-desc h1, .full-desc h2, .full-desc h3 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: #1a202c;
+}
+
+.full-desc h1 { font-size: 2em; }
+.full-desc h2 { font-size: 1.5em; }
+.full-desc h3 { font-size: 1.25em; }
+
+.full-desc p {
+    margin-bottom: 1em;
+}
+
+.full-desc ul, .full-desc ol {
+    margin-bottom: 1em;
+    padding-left: 1.5em;
+}
+
+.full-desc li {
+    margin-bottom: 0.5em;
+}
+
+.full-desc a {
+    color: #4c51bf;
+    text-decoration: underline;
+}
+
+.full-desc blockquote {
+    border-left: 4px solid #e2e8f0;
+    padding-left: 1em;
+    margin-left: 0;
+    color: #718096;
+    font-style: italic;
+}
+
+.full-desc code {
+    background-color: #edf2f7;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.full-desc pre {
+    background-color: #2d3748;
+    color: #fff;
+    padding: 1em;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+
+.full-desc pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.full-desc img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1em 0;
+}
+
 
 .loading-container, .error-container {
     display: flex;

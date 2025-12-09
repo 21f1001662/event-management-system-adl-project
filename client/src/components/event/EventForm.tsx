@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getPresignedUrl, uploadFileToS3 } from '@/api/storage';
 import { EventCategory } from '@/api/event/event.dto';
 import { Upload, Loader2 } from 'lucide-react';
+import MDEditor from '@uiw/react-md-editor';
 import './EventForm.css';
 
 interface EventFormProps {
@@ -108,13 +109,14 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
 
             <div className="form-group">
                 <label className="form-label">Full Description (Markdown supported)</label>
-                <textarea
-                    name="description"
-                    className="form-textarea"
-                    placeholder="# Event Details\n\nTell people what your event is about..."
-                    value={formData.description}
-                    onChange={handleInputChange}
-                />
+                <div data-color-mode="light">
+                    <MDEditor
+                        value={formData.description}
+                        onChange={(val) => setFormData(prev => ({ ...prev, description: val || '' }))}
+                        height={300}
+                        preview="edit"
+                    />
+                </div>
             </div>
 
             <div style={{ display: 'flex', gap: '20px' }}>
