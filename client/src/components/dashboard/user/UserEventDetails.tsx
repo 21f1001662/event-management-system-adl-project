@@ -4,6 +4,7 @@ import { useGetEvent } from '@/hooks/api/event';
 import { useBookTicket, useGetMyTickets, useCancelTicket } from '@/hooks/api/booking';
 import { Loader2, Calendar, MapPin, ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, User, Ticket, XCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import ReviewList from '@/components/review/ReviewList';
 import '@/pages/EventDetails.css'; // Reuse existing styles
 
 const UserEventDetails = () => {
@@ -188,6 +189,7 @@ const UserEventDetails = () => {
                             <div className="full-desc" data-color-mode="light">
                                 <ReactMarkdown>{event.description}</ReactMarkdown>
                             </div>
+                            <ReviewList eventId={event.id} />
                         </div>
                     </div>
 

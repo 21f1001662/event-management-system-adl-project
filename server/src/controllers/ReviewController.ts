@@ -56,7 +56,23 @@ export class ReviewController {
     static async getEventReviews(req: Request, res: Response) {
         try {
             const { eventId } = req.params;
-            const reviews = await ReviewController.reviewService.getEventReviews(eventId);
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+
+            const result = await ReviewController.reviewService.getEventReviews(eventId, page, limit);
+
+            res.json({
+                data: result,
+            });
+        } catch (error: any) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    static async getUserReviews(req: Request, res: Response) {
+        try {
+            const userId = (req as any).user.id;
+            const reviews = await ReviewController.reviewService.getUserReviews(userId);
 
             res.json({
                 data: reviews,

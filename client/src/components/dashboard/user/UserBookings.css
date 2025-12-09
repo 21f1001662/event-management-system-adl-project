@@ -1,5 +1,42 @@
+.ticket-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.review-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    white-space: nowrap;
+}
+
+.review-btn.add {
+    background-color: #4c51bf;
+    color: white;
+}
+
+.review-btn.add:hover {
+    background-color: #434190;
+}
+
+.review-btn.view {
+    background-color: #edf2f7;
+    color: #4a5568;
+}
+
+.review-btn.view:hover {
+    background-color: #e2e8f0;
+}
+
 .user-bookings-container {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .bookings-grid {

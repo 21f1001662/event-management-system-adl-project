@@ -48,10 +48,29 @@ export class ReviewService {
         await this.updateEventStats(review.event_id);
     }
 
-    async getEventReviews(eventId: string) {
-        return await this.reviewRepository.find({
+    async getEventReviews(eventId: string, page: number = 1, limit: number = 10) {
+        const skip = (page - 1) * limit;
+        const [reviews, total] = await this.reviewRepository.findAndCount({
             where: { event_id: eventId },
             relations: ['user'],
+            order: { created_at: 'DESC' },
+            skip,
+            take: limit,
+        });
+
+        return {
+            reviews,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    }
+
+    async getUserReviews(userId: string) {
+        return await this.reviewRepository.find({
+            where: { user_id: userId },
+            relations: ['event'],
             order: { created_at: 'DESC' },
         });
     }

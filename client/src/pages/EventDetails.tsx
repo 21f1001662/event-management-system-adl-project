@@ -4,6 +4,7 @@ import { useGetEvent } from '@/hooks/api/event';
 import { deleteEvent } from '@/api/event';
 import { Loader2, Calendar, MapPin, Users, Edit, User, ArrowLeft, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import ReviewList from '@/components/review/ReviewList';
 import './EventDetails.css';
 
 import ParticipantsModal from '@/components/organizer/ParticipantsModal';
@@ -130,6 +131,7 @@ const EventDetails = () => {
                             <div className="full-desc" data-color-mode="light">
                                 <ReactMarkdown>{event.description}</ReactMarkdown>
                             </div>
+                            <ReviewList eventId={event.id} />
                         </div>
                     </div>
 

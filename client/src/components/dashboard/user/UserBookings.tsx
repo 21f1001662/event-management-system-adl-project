@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
 import { getMyTickets } from '@/api/booking';
+import { getMyReviews } from '@/api/review';
 import QRCode from 'react-qr-code';
 import { X, Maximize2, MapPin, Calendar, Clock } from 'lucide-react';
+import ReviewModal from '@/components/review/ReviewModal';
 import './UserBookings.css';
 
 const UserBookings = () => {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedTicket, setSelectedTicket] = useState<any>(null);
+    const [userReviews, setUserReviews] = useState<any[]>([]);
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const [reviewEventId, setReviewEventId] = useState('');
+    const [existingReview, setExistingReview] = useState<any>(null);
 
     useEffect(() => {
         fetchBookings();
+        fetchUserReviews();
     }, []);
 
     const fetchBookings = async () => {
@@ -24,11 +31,32 @@ const UserBookings = () => {
         }
     };
 
+    const fetchUserReviews = async () => {
+        try {
+            const response = await getMyReviews();
+            setUserReviews(response.data.data || []);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
+
+    const handleReviewClick = (eventId: string) => {
+        const review = userReviews.find(r => r.event_id === eventId);
+        setReviewEventId(eventId);
+        setExistingReview(review);
+        setReviewModalOpen(true);
+    };
+
+    const handleReviewSuccess = () => {
+        fetchUserReviews();
+    };
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'confirmed': return '#28a745';
             case 'waitlist': return '#ffc107';
             case 'cancelled': return '#dc3545';
+            case 'attended': return '#4c51bf';
             default: return '#6c757d';
         }
     };
@@ -51,6 +79,7 @@ const UserBookings = () => {
 
     const TicketCard = ({ ticket, isModal = false }: { ticket: any, isModal?: boolean }) => {
         const qrValue = `${window.location.origin}/organizer/dashboard?tab=mark-attendance&ticket_number=${ticket.ticket_number}`;
+        const hasReview = userReviews.some(r => r.event_id === ticket.event.id);
 
         return (
             <div className={`ticket-card ${isModal ? 'modal-ticket' : ''}`}>
@@ -62,8 +91,10 @@ const UserBookings = () => {
                             <span>{ticket.event.title[0]}</span>
                         </div>
                     )}
-                    <div className="ticket-status" style={{ backgroundColor: getStatusColor(ticket.status) }}>
-                        {ticket.status}
+                    <div className="ticket-status" style={{
+                        backgroundColor: ticket.attendance === 'Present' ? '#4c51bf' : getStatusColor(ticket.status)
+                    }}>
+                        {ticket.attendance === 'Present' ? 'ATTENDED' : ticket.status}
                     </div>
                 </div>
 
@@ -92,9 +123,22 @@ const UserBookings = () => {
                             <span className="value">{ticket.ticket_number}</span>
                         </div>
                         {!isModal && (
-                            <button className="expand-btn" onClick={() => setSelectedTicket(ticket)}>
-                                <Maximize2 size={20} />
-                            </button>
+                            <div className="ticket-actions">
+                                {ticket.attendance === 'Present' && (
+                                    <button
+                                        className={`review-btn ${hasReview ? 'view' : 'add'}`}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleReviewClick(ticket.event.id);
+                                        }}
+                                    >
+                                        {hasReview ? 'View Review' : 'Add Review'}
+                                    </button>
+                                )}
+                                <button className="expand-btn" onClick={() => setSelectedTicket(ticket)}>
+                                    <Maximize2 size={20} />
+                                </button>
+                            </div>
                         )}
                     </div>
 
@@ -139,6 +183,14 @@ const UserBookings = () => {
                     </div>
                 </div>
             )}
+
+            <ReviewModal
+                isOpen={reviewModalOpen}
+                onClose={() => setReviewModalOpen(false)}
+                eventId={reviewEventId}
+                existingReview={existingReview}
+                onSuccess={handleReviewSuccess}
+            />
         </div>
     );
 };
