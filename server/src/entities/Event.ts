@@ -63,6 +63,12 @@ export class Event extends BaseEntity {
     @Column({ type: 'int', default: 0 })
     attendees_count: number;
 
+    @Column({ type: 'boolean', default: false })
+    allow_waitlist: boolean;
+
+    @Column({ type: 'int', default: 0 })
+    waitlist_count: number;
+
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'organizer_id' })
     organizer: User;

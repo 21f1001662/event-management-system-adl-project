@@ -8,6 +8,7 @@ import {
     IsEnum,
     IsInt,
     Min,
+    IsBoolean,
 } from 'class-validator';
 import { EventCategory } from '../entities/Event';
 
@@ -47,6 +48,10 @@ export class CreateEventDto {
     @IsInt()
     @Min(1)
     capacity: number;
+
+    @IsOptional()
+    @IsBoolean()
+    allow_waitlist?: boolean;
 }
 
 export class UpdateEventDto {
@@ -91,6 +96,10 @@ export class UpdateEventDto {
     @IsInt()
     @Min(1)
     capacity?: number;
+
+    @IsOptional()
+    @IsBoolean()
+    allow_waitlist?: boolean;
 }
 
 export class GetEventsQueryDto {
