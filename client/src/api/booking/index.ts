@@ -9,3 +9,8 @@ export async function getMyTickets(params: any): Promise<any> {
     const { data } = await apiClient.get("/bookings/my-tickets", { params });
     return data;
 }
+
+export async function cancelTicket(bookingId: string): Promise<any> {
+    const { data } = await apiClient.delete(`/bookings/${bookingId}`);
+    return data;
+}

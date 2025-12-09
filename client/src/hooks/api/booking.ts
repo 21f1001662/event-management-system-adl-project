@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { bookTicket, getMyTickets } from "@/api/booking";
+import { bookTicket, getMyTickets, cancelTicket } from "@/api/booking";
 
 export function useBookTicket() {
     const queryClient = useQueryClient();
@@ -16,5 +16,16 @@ export function useGetMyTickets(params: any) {
     return useQuery({
         queryKey: ["my-tickets", params],
         queryFn: () => getMyTickets(params),
+    });
+}
+
+export function useCancelTicket() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: cancelTicket,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["my-tickets"] });
+            queryClient.invalidateQueries({ queryKey: ["events"] });
+        },
     });
 }
