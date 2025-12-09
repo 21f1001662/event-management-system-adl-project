@@ -11,5 +11,6 @@ router.post('/', authenticate, BookingController.bookTicket);
 router.get('/my-tickets', authenticate, BookingController.getMyTickets);
 router.delete('/:id', authenticate, BookingController.cancelTicket);
 router.put('/attendance', authenticate, authorize([UserRole.ORGANIZER]), BookingController.markAttendance);
+router.get('/ticket/:ticketNumber', authenticate, authorize([UserRole.ORGANIZER]), BookingController.getTicketByNumber);
 
 export default router;

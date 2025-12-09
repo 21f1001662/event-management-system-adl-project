@@ -184,4 +184,16 @@ export class BookingService {
         booking.attendance = status;
         return await this.attendeeRepository.save(booking);
     }
+    async getTicketByNumber(ticketNumber: number) {
+        const booking = await this.attendeeRepository.findOne({
+            where: { ticket_number: ticketNumber },
+            relations: ['event', 'user'],
+        });
+
+        if (!booking) {
+            throw new Error('Ticket not found');
+        }
+
+        return booking;
+    }
 }

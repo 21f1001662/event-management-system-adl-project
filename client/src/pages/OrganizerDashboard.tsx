@@ -5,7 +5,8 @@ import type { RootState } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllEvents } from '@/hooks/api/event';
 import './OrganizerDashboard.css';
-import { Menu, X, Calendar, User, LogOut, Image as ImageIcon } from 'lucide-react';
+import { Menu, X, Calendar, User, LogOut, Image as ImageIcon, ClipboardCheck } from 'lucide-react';
+import MarkAttendance from '@/components/organizer/MarkAttendance';
 
 const OrganizerDashboard = () => {
     const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const OrganizerDashboard = () => {
 
     // UI State
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<'events' | 'profile'>('events');
+    const [activeTab, setActiveTab] = useState<'events' | 'profile' | 'mark-attendance'>('events');
 
     // Events Filter State
     const [search, setSearch] = useState('');
@@ -66,6 +67,13 @@ const OrganizerDashboard = () => {
                     >
                         <Calendar size={20} />
                         Events
+                    </div>
+                    <div
+                        className={`nav-item ${activeTab === 'mark-attendance' ? 'active' : ''}`}
+                        onClick={() => { setActiveTab('mark-attendance'); setSidebarOpen(false); }}
+                    >
+                        <ClipboardCheck size={20} />
+                        Mark Attendance
                     </div>
                     <div
                         className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
@@ -173,6 +181,8 @@ const OrganizerDashboard = () => {
                             </div>
                         )}
                     </>
+                ) : activeTab === 'mark-attendance' ? (
+                    <MarkAttendance />
                 ) : (
                     <div className="content-header">
                         <h1 className="page-title">Profile</h1>

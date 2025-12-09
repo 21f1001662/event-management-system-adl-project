@@ -20,3 +20,13 @@ export async function updateEvent(id: string, eventData: any): Promise<any> {
     const { data } = await apiClient.put(`/events/${id}`, eventData);
     return data.data;
 }
+
+export async function getTicketByNumber(ticketNumber: number): Promise<any> {
+    const { data } = await apiClient.get(`/bookings/ticket/${ticketNumber}`);
+    return data.data;
+}
+
+export async function markAttendance(ticketNumber: number, status: string): Promise<any> {
+    const { data } = await apiClient.put(`/bookings/attendance`, { ticket_number: ticketNumber, status });
+    return data.data;
+}

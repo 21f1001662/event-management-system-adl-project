@@ -82,4 +82,26 @@ export class BookingController {
             }
         }
     }
+
+    static async getTicketByNumber(req: Request, res: Response) {
+        try {
+            const { ticketNumber } = req.params;
+
+            if (!ticketNumber) {
+                return res.status(400).json({ message: 'Ticket number is required' });
+            }
+
+            const result = await BookingController.bookingService.getTicketByNumber(Number(ticketNumber));
+            res.json({
+                message: 'Ticket details retrieved successfully',
+                data: result,
+            });
+        } catch (error: any) {
+            if (error.message === 'Ticket not found') {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }
