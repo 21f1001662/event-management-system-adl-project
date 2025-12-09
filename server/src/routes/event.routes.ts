@@ -28,7 +28,7 @@ router.put(
     '/:id',
     authenticate,
     authorize([UserRole.ORGANIZER]),
-    validationMiddleware(CreateEventDto), // Reusing CreateEventDto for full updates, or use UpdateEventDto for partial
+    validationMiddleware(CreateEventDto),
     EventController.updateEvent
 );
 
