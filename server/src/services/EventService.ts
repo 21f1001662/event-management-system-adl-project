@@ -87,4 +87,14 @@ export class EventService {
         Object.assign(event, data);
         return await this.eventRepository.save(event);
     }
+
+    async deleteEvent(id: string, organizerId: string) {
+        const event = await this.getEventById(id);
+
+        if (event.organizer_id !== organizerId) {
+            throw new Error('Unauthorized to delete this event');
+        }
+
+        return await this.eventRepository.remove(event);
+    }
 }

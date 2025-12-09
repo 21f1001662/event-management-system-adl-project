@@ -68,4 +68,23 @@ export class EventController {
             }
         }
     }
+
+    static async deleteEvent(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const organizerId = (req as any).user.id;
+            await EventController.eventService.deleteEvent(id, organizerId);
+            res.json({
+                message: 'Event deleted successfully',
+            });
+        } catch (error: any) {
+            if (error.message === 'Event not found') {
+                res.status(404).json({ message: error.message });
+            } else if (error.message === 'Unauthorized to delete this event') {
+                res.status(403).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }

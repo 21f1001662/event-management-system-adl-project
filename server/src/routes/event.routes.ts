@@ -32,4 +32,11 @@ router.put(
     EventController.updateEvent
 );
 
+router.delete(
+    '/:id',
+    authenticate,
+    authorize([UserRole.ORGANIZER]),
+    EventController.deleteEvent
+);
+
 export default router;
