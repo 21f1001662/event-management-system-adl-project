@@ -71,6 +71,10 @@ export class BookingService {
             qb.andWhere('event.title ILIKE :eventName', { eventName: `%${eventName}%` });
         }
 
+        if (query.eventId) {
+            qb.andWhere('event.id = :eventId', { eventId: query.eventId });
+        }
+
         // Handle ordering
         if (orderBy === 'event_date') {
             qb.orderBy('event.date', order || 'ASC');
@@ -95,7 +99,6 @@ export class BookingService {
         return await AppDataSource.transaction(async (transactionalEntityManager) => {
             const booking = await transactionalEntityManager.findOne(EventAttendee, {
                 where: { id: bookingId },
-                relations: ['event'],
                 lock: { mode: 'pessimistic_write' },
             });
 

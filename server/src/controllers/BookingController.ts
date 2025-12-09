@@ -50,6 +50,7 @@ export class BookingController {
             const result = await BookingController.bookingService.cancelTicket(userId, id);
             res.json(result);
         } catch (error: any) {
+            console.error('Error cancelling ticket:', error);
             if (error.message === 'Booking not found') {
                 res.status(404).json({ message: error.message });
             } else if (error.message === 'Unauthorized to cancel this booking') {
