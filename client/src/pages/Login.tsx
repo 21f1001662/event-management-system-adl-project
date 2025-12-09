@@ -25,7 +25,7 @@ export default function Login() {
                         } else if (roles.includes('organizer')) {
                             navigate('/organizer');
                         } else {
-                            navigate('/');
+                            navigate('/user/dashboard');
                         }
                     },
                     onError: (error) => {
