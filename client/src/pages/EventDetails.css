@@ -12,7 +12,7 @@
 }
 
 .full-desc h1, .full-desc h2, .full-desc h3 {
-    margin-top: 1.5em;
+    margin-top: 1em;
     margin-bottom: 0.5em;
     font-weight: 600;
     color: #1a202c;
@@ -22,18 +22,7 @@
 .full-desc h2 { font-size: 1.5em; }
 .full-desc h3 { font-size: 1.25em; }
 
-.full-desc p {
-    margin-bottom: 1em;
-}
 
-.full-desc ul, .full-desc ol {
-    margin-bottom: 1em;
-    padding-left: 1.5em;
-}
-
-.full-desc li {
-    margin-bottom: 0.5em;
-}
 
 .full-desc a {
     color: #4c51bf;
@@ -311,9 +300,21 @@
 
 .full-desc {
     color: #4a5568;
-    line-height: 1.8;
+    line-height: 1.6;
     font-size: 1.05rem;
-    white-space: pre-wrap;
+}
+
+.full-desc p {
+    margin-bottom: 0.75em;
+}
+
+.full-desc ul, .full-desc ol {
+    margin-bottom: 0.75em;
+    padding-left: 1.5em;
+}
+
+.full-desc li {
+    margin-bottom: 0.25em;
 }
 
 /* Sidebar */
