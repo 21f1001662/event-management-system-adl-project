@@ -185,15 +185,36 @@ export class BookingService {
         return await this.attendeeRepository.save(booking);
     }
     async getTicketByNumber(ticketNumber: number) {
-        const booking = await this.attendeeRepository.findOne({
+        const ticket = await this.attendeeRepository.findOne({
             where: { ticket_number: ticketNumber },
             relations: ['event', 'user'],
         });
 
-        if (!booking) {
+        if (!ticket) {
             throw new Error('Ticket not found');
         }
 
-        return booking;
+        return ticket;
+    }
+
+    async getEventParticipants(eventId: string, query: any) {
+        const { page = 1, limit = 10 } = query;
+        const skip = (page - 1) * limit;
+
+        const [participants, total] = await this.attendeeRepository.findAndCount({
+            where: { event_id: eventId },
+            relations: ['user'],
+            order: { created_at: 'DESC' },
+            skip,
+            take: limit,
+        });
+
+        return {
+            participants,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            totalPages: Math.ceil(total / limit),
+        };
     }
 }

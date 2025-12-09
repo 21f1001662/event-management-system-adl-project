@@ -104,4 +104,19 @@ export class BookingController {
             }
         }
     }
+
+    static async getEventParticipants(req: Request, res: Response) {
+        try {
+            const { eventId } = req.params;
+            const query = req.query;
+
+            const result = await BookingController.bookingService.getEventParticipants(eventId, query);
+            res.json({
+                message: 'Participants retrieved successfully',
+                data: result,
+            });
+        } catch (error: any) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
