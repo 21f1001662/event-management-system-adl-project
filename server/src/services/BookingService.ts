@@ -90,4 +90,83 @@ export class BookingService {
             totalPages: Math.ceil(total / limit),
         };
     }
+
+    async cancelTicket(userId: string, bookingId: string) {
+        return await AppDataSource.transaction(async (transactionalEntityManager) => {
+            const booking = await transactionalEntityManager.findOne(EventAttendee, {
+                where: { id: bookingId },
+                relations: ['event'],
+                lock: { mode: 'pessimistic_write' },
+            });
+
+            if (!booking) {
+                throw new Error('Booking not found');
+            }
+
+            if (booking.user_id !== userId) {
+                throw new Error('Unauthorized to cancel this booking');
+            }
+
+            const event = await transactionalEntityManager.findOne(Event, {
+                where: { id: booking.event_id },
+                lock: { mode: 'pessimistic_write' },
+            });
+
+            if (!event) {
+                throw new Error('Event not found');
+            }
+
+            if (booking.status === AttendeeStatus.CONFIRMED) {
+                // Check if there is a waitlist
+                if (event.waitlist_count > 0) {
+                    // Get the first person on the waitlist
+                    const firstWaitlisted = await transactionalEntityManager.findOne(EventAttendee, {
+                        where: { event_id: event.id, status: AttendeeStatus.WAITLIST, waitlist_position: 1 },
+                    });
+
+                    if (firstWaitlisted) {
+                        // Promote to confirmed
+                        firstWaitlisted.status = AttendeeStatus.CONFIRMED;
+                        firstWaitlisted.status = AttendeeStatus.CONFIRMED;
+                        firstWaitlisted.waitlist_position = null;
+                        await transactionalEntityManager.save(EventAttendee, firstWaitlisted);
+
+                        // Decrement waitlist count
+                        event.waitlist_count -= 1;
+
+                        // Shift other waitlisted attendees up
+                        await transactionalEntityManager.createQueryBuilder()
+                            .update(EventAttendee)
+                            .set({ waitlist_position: () => 'waitlist_position - 1' })
+                            .where('event_id = :eventId', { eventId: event.id })
+                            .andWhere('status = :status', { status: AttendeeStatus.WAITLIST })
+                            .andWhere('waitlist_position > 1')
+                            .execute();
+                    } else {
+                        // Should not happen if waitlist_count > 0, but safe fallback
+                        event.attendees_count -= 1;
+                    }
+                } else {
+                    event.attendees_count -= 1;
+                }
+            } else if (booking.status === AttendeeStatus.WAITLIST) {
+                // If cancelling a waitlisted ticket, shift others up
+                if (booking.waitlist_position) {
+                    await transactionalEntityManager.createQueryBuilder()
+                        .update(EventAttendee)
+                        .set({ waitlist_position: () => 'waitlist_position - 1' })
+                        .where('event_id = :eventId', { eventId: event.id })
+                        .andWhere('status = :status', { status: AttendeeStatus.WAITLIST })
+                        .andWhere('waitlist_position > :position', { position: booking.waitlist_position })
+                        .execute();
+                }
+                event.waitlist_count -= 1;
+            }
+
+            await transactionalEntityManager.save(Event, event);
+            await transactionalEntityManager.remove(EventAttendee, booking);
+
+            return { message: 'Booking cancelled successfully' };
+        });
+    }
 }

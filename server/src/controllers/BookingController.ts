@@ -42,4 +42,21 @@ export class BookingController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    static async cancelTicket(req: Request, res: Response) {
+        try {
+            const userId = (req as any).user.id;
+            const { id } = req.params;
+            const result = await BookingController.bookingService.cancelTicket(userId, id);
+            res.json(result);
+        } catch (error: any) {
+            if (error.message === 'Booking not found') {
+                res.status(404).json({ message: error.message });
+            } else if (error.message === 'Unauthorized to cancel this booking') {
+                res.status(403).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }

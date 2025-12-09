@@ -46,7 +46,7 @@ export class EventAttendee extends BaseEntity {
     status: AttendeeStatus;
 
     @Column({ type: 'int', nullable: true })
-    waitlist_position: number;
+    waitlist_position: number | null;
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
