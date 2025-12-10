@@ -26,7 +26,7 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
         video_url: ''
     });
 
-    const [uploading, setUploading] = useState(false);
+    const [uploadingField, setUploadingField] = useState<'image' | 'video' | null>(null);
 
     useEffect(() => {
         if (initialData) {
@@ -51,16 +51,21 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const isImage = file.type.startsWith('image/');
+        const isVideo = file.type.startsWith('video/');
+
+        if (!isImage && !isVideo) return;
+
         try {
-            setUploading(true);
+            setUploadingField(isImage ? 'image' : 'video');
             const { data } = await getPresignedUrl(file.type);
             await uploadFileToS3(data.url, file);
 
             const publicUrl = `https://carecirclemedia2.s3.ap-south-1.amazonaws.com/${data.key}`;
 
-            if (file.type.startsWith('image/')) {
+            if (isImage) {
                 setFormData(prev => ({ ...prev, image_url: publicUrl }));
-            } else if (file.type.startsWith('video/')) {
+            } else if (isVideo) {
                 setFormData(prev => ({ ...prev, video_url: publicUrl }));
             }
 
@@ -68,7 +73,7 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
             console.error('Upload failed:', error);
             alert('File upload failed. Please try again.');
         } finally {
-            setUploading(false);
+            setUploadingField(null);
         }
     };
 
@@ -193,8 +198,8 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
                         style={{ display: 'none' }}
                         onChange={handleFileUpload}
                     />
-                    <label htmlFor="image-upload" style={{ cursor: 'pointer', display: 'block' }}>
-                        {uploading ? (
+                    <label htmlFor="image-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                        {uploadingField === 'image' ? (
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                                 <Loader2 className="animate-spin" /> Uploading...
                             </div>
@@ -223,8 +228,8 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
                         style={{ display: 'none' }}
                         onChange={handleFileUpload}
                     />
-                    <label htmlFor="video-upload" style={{ cursor: 'pointer', display: 'block' }}>
-                        {uploading ? (
+                    <label htmlFor="video-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                        {uploadingField === 'video' ? (
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                                 <Loader2 className="animate-spin" /> Uploading...
                             </div>
@@ -269,7 +274,7 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
                 <button
                     className="event-form-submit-btn"
                     onClick={handleSubmit}
-                    disabled={isSubmitting || uploading}
+                    disabled={isSubmitting || uploadingField !== null}
                 >
                     {isSubmitting ? <Loader2 className="animate-spin" /> : null}
                     {isSubmitting ? 'Saving...' : submitLabel}

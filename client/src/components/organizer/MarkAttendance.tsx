@@ -53,7 +53,7 @@ const MarkAttendance: React.FC = () => {
 
     return (
         <div className="mark-attendance-container">
-            <h2>Mark Attendance</h2>
+            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Mark Attendance</h2>
             <div className="input-group">
                 <input
                     type="number"
