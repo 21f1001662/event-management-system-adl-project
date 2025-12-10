@@ -78,6 +78,9 @@ export class Event extends BaseEntity {
     @Column({ type: 'boolean', default: true })
     approved: boolean;
 
+    @Column({ type: 'int', default: 0 })
+    flag_count: number;
+
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'organizer_id' })
     organizer: User;
