@@ -41,6 +41,16 @@ const ProfileUpdate = () => {
 
             const publicUrl = `https://carecirclemedia2.s3.ap-south-1.amazonaws.com/${data.key}`;
             setFormData(prev => ({ ...prev, profile_picture: publicUrl }));
+
+            // Immediately update profile with new image
+            updateProfile({ ...formData, profile_picture: publicUrl }, {
+                onSuccess: () => {
+                    // Optional: Add a subtle notification if needed, or just let the UI reflect the change
+                },
+                onError: (error) => {
+                    alert('Failed to update profile picture: ' + error.message);
+                }
+            });
         } catch (error) {
             console.error('Upload failed:', error);
             alert('Failed to upload image');

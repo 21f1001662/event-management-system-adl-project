@@ -10,7 +10,7 @@ const router = Router();
 router.get(
     '/presigned-url',
     authenticate,
-    authorize([UserRole.ORGANIZER, UserRole.ADMIN]),
+    authorize([UserRole.ORGANIZER, UserRole.ADMIN, UserRole.USER]),
     StorageController.getPresignedUrl
 );
 
