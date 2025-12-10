@@ -77,7 +77,9 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
         onSubmit({
             ...formData,
             date: dateTime,
-            capacity: Number(formData.capacity)
+            capacity: Number(formData.capacity),
+            video_url: formData.video_url || null,
+            image_url: formData.image_url || null
         });
     };
 
@@ -235,8 +237,30 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
                     </label>
                 </div>
                 {formData.video_url && (
-                    <div className="upload-preview">
+                    <div className="upload-preview" style={{ position: 'relative' }}>
                         <video src={formData.video_url} controls />
+                        <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, video_url: '' }))}
+                            style={{
+                                position: 'absolute',
+                                top: '5px',
+                                right: '5px',
+                                background: 'rgba(0,0,0,0.5)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '50%',
+                                width: '24px',
+                                height: '24px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            title="Remove Video"
+                        >
+                            ×
+                        </button>
                     </div>
                 )}
             </div>
