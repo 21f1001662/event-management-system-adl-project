@@ -123,7 +123,7 @@ const UserBookings = () => {
                             <span className="value">{ticket.ticket_number}</span>
                         </div>
                         {!isModal && (
-                            <div className="ticket-actions">
+                            <div className="ticket-actions-booking">
                                 {ticket.attendance === 'Present' && (
                                     <button
                                         className={`review-btn ${hasReview ? 'view' : 'add'}`}

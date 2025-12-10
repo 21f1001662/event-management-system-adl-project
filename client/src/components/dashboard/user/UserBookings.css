@@ -1,7 +1,8 @@
-.ticket-actions {
+.ticket-actions-booking {
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .review-btn {
