@@ -110,4 +110,21 @@ export class EventController {
             }
         }
     }
+
+    static async flagEvent(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const event = await EventController.eventService.flagEvent(id);
+            res.json({
+                message: 'Event flagged successfully',
+                data: event,
+            });
+        } catch (error: any) {
+            if (error.message === 'Event not found') {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }

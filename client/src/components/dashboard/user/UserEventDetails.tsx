@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetEvent } from '@/hooks/api/event';
+import { useGetEvent, useFlagEvent } from '@/hooks/api/event';
 import { useBookTicket, useGetMyTickets, useCancelTicket } from '@/hooks/api/booking';
-import { Loader2, Calendar, MapPin, ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, User, Ticket, XCircle } from 'lucide-react';
+import { Loader2, Calendar, MapPin, ArrowLeft, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, User, Ticket, XCircle, Flag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import ReviewList from '@/components/review/ReviewList';
 import '@/pages/EventDetails.css'; // Reuse existing styles
@@ -24,6 +24,29 @@ const UserEventDetails = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showCancelSuccess, setShowCancelSuccess] = useState(false);
     const [bookingError, setBookingError] = useState<string | null>(null);
+
+    const { mutate: flagEvent } = useFlagEvent();
+    const [isFlagged, setIsFlagged] = useState(() => {
+        return sessionStorage.getItem(`flagged_${id}`) === 'true';
+    });
+
+    const handleFlagEvent = () => {
+        if (!id) return;
+        if (isFlagged) return;
+
+        if (confirm('Are you sure you want to flag this event as inappropriate?')) {
+            flagEvent(id, {
+                onSuccess: () => {
+                    sessionStorage.setItem(`flagged_${id}`, 'true');
+                    setIsFlagged(true);
+                    alert('Event flagged successfully.');
+                },
+                onError: () => {
+                    alert('Failed to flag event.');
+                }
+            });
+        }
+    };
 
     if (isLoading || isLoadingTicket) {
         return (
@@ -231,100 +254,132 @@ const UserEventDetails = () => {
                                 </div>
                             </div>
                         </div>
-                    </aside>
-                </div>
+
+                        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                            <button
+                                onClick={handleFlagEvent}
+                                disabled={isFlagged}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: isFlagged ? '#a0aec0' : '#e53e3e',
+                                    cursor: isFlagged ? 'default' : 'pointer',
+                                    fontSize: '0.9rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '6px',
+                                    width: '100%'
+                                }}
+                            >
+                                <Flag size={16} />
+                                {isFlagged ? 'Event Flagged' : 'Flag Event'}
+                            </button>
+                        </div>
+                    </aside >
+                </div >
             </main>
 
             {/* Confirmation Modal */}
-            {showConfirmation && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h2>Confirm Booking</h2>
-                        <p>Are you sure you want to book a ticket for <strong>{event.title}</strong>?</p>
-                        {event.attendees_count >= event.capacity && event.allow_waitlist && (
-                            <div className="alert-warning" style={{ marginTop: '10px', padding: '10px', background: '#fff3cd', color: '#856404', borderRadius: '4px' }}>
-                                <AlertCircle size={16} style={{ display: 'inline', marginRight: '5px' }} />
-                                Note: This event is full. You will be added to the waitlist.
+            {
+                showConfirmation && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h2>Confirm Booking</h2>
+                            <p>Are you sure you want to book a ticket for <strong>{event.title}</strong>?</p>
+                            {event.attendees_count >= event.capacity && event.allow_waitlist && (
+                                <div className="alert-warning" style={{ marginTop: '10px', padding: '10px', background: '#fff3cd', color: '#856404', borderRadius: '4px' }}>
+                                    <AlertCircle size={16} style={{ display: 'inline', marginRight: '5px' }} />
+                                    Note: This event is full. You will be added to the waitlist.
+                                </div>
+                            )}
+                            <div className="modal-actions">
+                                <button className="cancel-btn" onClick={() => setShowConfirmation(false)}>Cancel</button>
+                                <button className="confirm-btn" onClick={confirmBooking} disabled={isBooking}>
+                                    {isBooking ? 'Processing...' : 'Confirm'}
+                                </button>
                             </div>
-                        )}
-                        <div className="modal-actions">
-                            <button className="cancel-btn" onClick={() => setShowConfirmation(false)}>Cancel</button>
-                            <button className="confirm-btn" onClick={confirmBooking} disabled={isBooking}>
-                                {isBooking ? 'Processing...' : 'Confirm'}
-                            </button>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Cancel Confirmation Modal */}
-            {showCancelConfirmation && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h2>Cancel Ticket</h2>
-                        <p>Are you sure you want to cancel your ticket for <strong>{event.title}</strong>?</p>
-                        <p style={{ fontSize: '0.9rem', color: '#718096' }}>This action cannot be undone.</p>
-                        <div className="modal-actions">
-                            <button className="cancel-btn" onClick={() => setShowCancelConfirmation(false)}>Keep Ticket</button>
-                            <button
-                                className="confirm-btn"
-                                style={{ backgroundColor: '#e53e3e' }}
-                                onClick={confirmCancellation}
-                                disabled={isCancelling}
-                            >
-                                {isCancelling ? 'Processing...' : 'Confirm Cancellation'}
+            {
+                showCancelConfirmation && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h2>Cancel Ticket</h2>
+                            <p>Are you sure you want to cancel your ticket for <strong>{event.title}</strong>?</p>
+                            <p style={{ fontSize: '0.9rem', color: '#718096' }}>This action cannot be undone.</p>
+                            <div className="modal-actions">
+                                <button className="cancel-btn" onClick={() => setShowCancelConfirmation(false)}>Keep Ticket</button>
+                                <button
+                                    className="confirm-btn"
+                                    style={{ backgroundColor: '#e53e3e' }}
+                                    onClick={confirmCancellation}
+                                    disabled={isCancelling}
+                                >
+                                    {isCancelling ? 'Processing...' : 'Confirm Cancellation'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* Success Modal */}
+            {
+                showSuccess && (
+                    <div className="modal-overlay">
+                        <div className="modal-content success">
+                            <CheckCircle size={48} color="#48bb78" />
+                            <h2>Congratulations!</h2>
+                            <p>
+                                {event.attendees_count >= event.capacity
+                                    ? 'You have been added to the waitlist.'
+                                    : 'Your ticket has been booked successfully.'}
+                            </p>
+                            <button className="confirm-btn" onClick={() => { setShowSuccess(false); navigate('/user/dashboard'); }}>
+                                Go to Dashboard
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* Success Modal */}
-            {showSuccess && (
-                <div className="modal-overlay">
-                    <div className="modal-content success">
-                        <CheckCircle size={48} color="#48bb78" />
-                        <h2>Congratulations!</h2>
-                        <p>
-                            {event.attendees_count >= event.capacity
-                                ? 'You have been added to the waitlist.'
-                                : 'Your ticket has been booked successfully.'}
-                        </p>
-                        <button className="confirm-btn" onClick={() => { setShowSuccess(false); navigate('/user/dashboard'); }}>
-                            Go to Dashboard
-                        </button>
-                    </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Cancel Success Modal */}
-            {showCancelSuccess && (
-                <div className="modal-overlay">
-                    <div className="modal-content success">
-                        <CheckCircle size={48} color="#48bb78" />
-                        <h2>Cancelled</h2>
-                        <p>Your ticket has been cancelled successfully.</p>
-                        <button className="confirm-btn" onClick={() => { setShowCancelSuccess(false); }}>
-                            Close
-                        </button>
+            {
+                showCancelSuccess && (
+                    <div className="modal-overlay">
+                        <div className="modal-content success">
+                            <CheckCircle size={48} color="#48bb78" />
+                            <h2>Cancelled</h2>
+                            <p>Your ticket has been cancelled successfully.</p>
+                            <button className="confirm-btn" onClick={() => { setShowCancelSuccess(false); }}>
+                                Close
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Error Modal */}
-            {bookingError && (
-                <div className="modal-overlay">
-                    <div className="modal-content error">
-                        <AlertCircle size={48} color="#f56565" />
-                        <h2>Error</h2>
-                        <p>{bookingError}</p>
-                        <button className="confirm-btn" onClick={() => setBookingError(null)}>
-                            Close
-                        </button>
+            {
+                bookingError && (
+                    <div className="modal-overlay">
+                        <div className="modal-content error">
+                            <AlertCircle size={48} color="#f56565" />
+                            <h2>Error</h2>
+                            <p>{bookingError}</p>
+                            <button className="confirm-btn" onClick={() => setBookingError(null)}>
+                                Close
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

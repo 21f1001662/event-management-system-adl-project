@@ -40,3 +40,8 @@ export async function toggleEventApproval(id: string): Promise<any> {
     const { data } = await apiClient.patch(`/events/${id}/approval`);
     return data.data;
 }
+
+export async function flagEvent(id: string): Promise<any> {
+    const { data } = await apiClient.post(`/events/${id}/flag`);
+    return data.data;
+}

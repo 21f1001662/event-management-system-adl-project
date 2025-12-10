@@ -113,4 +113,10 @@ export class EventService {
     async getUser(id: string) {
         return await AppDataSource.getRepository(User).findOne({ where: { id } });
     }
+
+    async flagEvent(id: string) {
+        const event = await this.getEventById(id);
+        event.flag_count += 1;
+        return await this.eventRepository.save(event);
+    }
 }

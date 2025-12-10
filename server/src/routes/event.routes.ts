@@ -39,6 +39,12 @@ router.patch(
     EventController.toggleApproval
 );
 
+router.post(
+    '/:id/flag',
+    authenticate,
+    EventController.flagEvent
+);
+
 router.delete(
     '/:id',
     authenticate,

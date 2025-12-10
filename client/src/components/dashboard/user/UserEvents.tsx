@@ -24,7 +24,8 @@ const UserEvents = () => {
         search: debouncedSearch,
         orderBy: orderBy,
         order: 'DESC',
-        limit: 100
+        limit: 100,
+        approved: 'true'
     });
 
     return (
@@ -99,6 +100,7 @@ const UserEvents = () => {
                                             style={{ width: `${Math.min((event.attendees_count / event.capacity) * 100, 100)}% ` }}
                                         ></div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
