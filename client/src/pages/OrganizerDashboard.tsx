@@ -9,10 +9,14 @@ import { Menu, X, Calendar, User, LogOut, Image as ImageIcon, ClipboardCheck } f
 import MarkAttendance from '@/components/organizer/MarkAttendance';
 import ProfileUpdate from '@/components/profile/ProfileUpdate';
 
+import { useGetOwnProfile } from '@/hooks/api/user';
+
 const OrganizerDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state: RootState) => state.auth.user);
+    const { data: profileData } = useGetOwnProfile();
+    const authUser = useSelector((state: RootState) => state.auth.user);
+    const user = profileData?.data || authUser;
     const [searchParams] = useSearchParams();
     const tabParam = searchParams.get('tab');
 
@@ -105,7 +109,21 @@ const OrganizerDashboard = () => {
                     <>
                         <div className="content-header">
                             <h1 className="page-title">My Events</h1>
-                            <button className="create-btn" onClick={() => navigate('/organizer/create-event')}>Create Event</button>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                <button
+                                    className="create-btn"
+                                    onClick={() => navigate('/organizer/create-event')}
+                                    disabled={!user?.verified}
+                                    title={!user?.verified ? "Account Approval Required" : "Create new event"}
+                                >
+                                    Create Event
+                                </button>
+                                {!user?.verified && (
+                                    <span style={{ fontSize: '0.8rem', color: '#e53e3e', marginTop: '5px' }}>
+                                        Account pending approval
+                                    </span>
+                                )}
+                            </div>
                         </div>
 
                         <div className="controls-section">

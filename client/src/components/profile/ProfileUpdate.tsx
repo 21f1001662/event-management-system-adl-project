@@ -104,6 +104,23 @@ const ProfileUpdate = () => {
                 </label>
             </div>
 
+            {profileData?.data?.roles?.includes('organizer') && (
+                <div style={{
+                    textAlign: 'center',
+                    marginBottom: '20px',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    backgroundColor: profileData.data.verified ? '#d1fae5' : '#fee2e2',
+                    color: profileData.data.verified ? '#065f46' : '#991b1b',
+                    display: 'inline-block',
+                    fontWeight: '500',
+                    fontSize: '0.9rem',
+                    border: `1px solid ${profileData.data.verified ? '#a7f3d0' : '#fecaca'}`
+                }}>
+                    {profileData.data.verified ? 'Account Verified' : 'Account Pending Approval'}
+                </div>
+            )}
+
             <form className="profile-form" onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label className="form-label">Name</label>

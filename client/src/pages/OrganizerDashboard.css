@@ -146,6 +146,12 @@
     background-color: #434190;
 }
 
+.create-btn:disabled {
+    background-color: #cbd5e0;
+    color: #718096;
+    cursor: not-allowed;
+}
+
 /* Events Grid */
 .events-grid {
     display: grid;

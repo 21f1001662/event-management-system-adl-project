@@ -1,5 +1,6 @@
 import { AppDataSource } from '../config/database';
 import { Event } from '../entities/Event';
+import { User } from '../entities/User';
 import { CreateEventDto, GetEventsQueryDto } from '../dtos/EventDto';
 import { addOrdering, addPagination } from '../utils/query.utils';
 
@@ -107,5 +108,9 @@ export class EventService {
         const event = await this.getEventById(id);
         event.approved = !event.approved;
         return await this.eventRepository.save(event);
+    }
+
+    async getUser(id: string) {
+        return await AppDataSource.getRepository(User).findOne({ where: { id } });
     }
 }

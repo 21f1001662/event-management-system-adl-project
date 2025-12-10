@@ -8,6 +8,12 @@ export class EventController {
     static async createEvent(req: Request, res: Response) {
         try {
             const organizerId = (req as any).user.id;
+            const user = await EventController.eventService.getUser(organizerId);
+
+            if (!user?.verified) {
+                return res.status(403).json({ message: 'Organizer account is not verified. Please wait for admin approval.' });
+            }
+
             const data: CreateEventDto = req.body;
             const event = await EventController.eventService.createEvent(data, organizerId);
             res.status(201).json({
