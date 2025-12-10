@@ -12,10 +12,11 @@ export function useBookTicket() {
     });
 }
 
-export function useGetMyTickets(params: any) {
+export function useGetMyTickets(params: any, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: ["my-tickets", params],
         queryFn: () => getMyTickets(params),
+        enabled: options?.enabled,
     });
 }
 

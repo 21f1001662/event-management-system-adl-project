@@ -7,16 +7,26 @@ import ReactMarkdown from 'react-markdown';
 import ReviewList from '@/components/review/ReviewList';
 import '@/pages/EventDetails.css'; // Reuse existing styles
 
+import { useSelector } from 'react-redux';
+
+import ConfirmationModal from '@/components/common/ConfirmationModal';
+
 const UserEventDetails = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { accessToken } = useSelector((state: any) => state.auth);
+
     const { data: event, isLoading, error } = useGetEvent(id || '');
     const { mutate: bookTicket, isPending: isBooking } = useBookTicket();
     const { mutate: cancelTicket, isPending: isCancelling } = useCancelTicket();
 
-    // Fetch user's ticket for this event
-    const { data: myTicketsData, isLoading: isLoadingTicket } = useGetMyTickets({ eventId: id });
-    const myTicket = myTicketsData?.data?.tickets?.[0];
+    // Fetch user's ticket for this event only if authenticated
+    const { data: myTicketsData, isLoading: isLoadingTicket } = useGetMyTickets(
+        { eventId: id },
+        { enabled: !!accessToken }
+    );
+    // If not authenticated or no data, myTicket is undefined
+    const myTicket = accessToken ? myTicketsData?.data?.tickets?.[0] : undefined;
 
     const [currentSlide, setCurrentSlide] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -25,30 +35,40 @@ const UserEventDetails = () => {
     const [showCancelSuccess, setShowCancelSuccess] = useState(false);
     const [bookingError, setBookingError] = useState<string | null>(null);
 
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showFlagConfirmation, setShowFlagConfirmation] = useState(false);
+
     const { mutate: flagEvent } = useFlagEvent();
     const [isFlagged, setIsFlagged] = useState(() => {
         return sessionStorage.getItem(`flagged_${id}`) === 'true';
     });
 
     const handleFlagEvent = () => {
+        if (!accessToken) {
+            setShowLoginModal(true);
+            return;
+        }
         if (!id) return;
         if (isFlagged) return;
 
-        if (confirm('Are you sure you want to flag this event as inappropriate?')) {
-            flagEvent(id, {
-                onSuccess: () => {
-                    sessionStorage.setItem(`flagged_${id}`, 'true');
-                    setIsFlagged(true);
-                    alert('Event flagged successfully.');
-                },
-                onError: () => {
-                    alert('Failed to flag event.');
-                }
-            });
-        }
+        setShowFlagConfirmation(true);
     };
 
-    if (isLoading || isLoadingTicket) {
+    const confirmFlag = () => {
+        if (!id) return;
+        flagEvent(id, {
+            onSuccess: () => {
+                sessionStorage.setItem(`flagged_${id}`, 'true');
+                setIsFlagged(true);
+                alert('Event flagged successfully.');
+            },
+            onError: () => {
+                alert('Failed to flag event.');
+            }
+        });
+    };
+
+    if (isLoading || (accessToken && isLoadingTicket)) {
         return (
             <div className="loading-container">
                 <Loader2 className="animate-spin" size={48} color="#4c51bf" />
@@ -68,6 +88,10 @@ const UserEventDetails = () => {
     const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
 
     const handleBookClick = () => {
+        if (!accessToken) {
+            setShowLoginModal(true);
+            return;
+        }
         setShowConfirmation(true);
     };
 
@@ -379,6 +403,27 @@ const UserEventDetails = () => {
                     </div>
                 )
             }
+
+            {/* Login Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                onConfirm={() => navigate('/login')}
+                title="Login Required"
+                message="You need to be logged in to perform this action. Would you like to go to the login page?"
+                confirmText="Login"
+            />
+
+            {/* Flag Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={showFlagConfirmation}
+                onClose={() => setShowFlagConfirmation(false)}
+                onConfirm={confirmFlag}
+                title="Flag Event"
+                message="Are you sure you want to flag this event as inappropriate? This action will alert the administrators."
+                confirmText="Flag Event"
+                isDestructive={true}
+            />
         </div >
     );
 };

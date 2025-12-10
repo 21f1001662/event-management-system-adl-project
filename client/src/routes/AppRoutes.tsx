@@ -40,10 +40,12 @@ export default function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/organizer/register" element={<OrganizerRegister />} />
 
+            <Route path="/" element={<Navigate to="/user/dashboard" replace />} />
+            <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/user/events/:id" element={<UserEventDetails />} />
+
             <Route element={<ProtectedRoute allowedRoles={['user']} />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/user/dashboard" element={<UserDashboard />} />
-                <Route path="/user/events/:id" element={<UserEventDetails />} />
+                {/* <Route path="/" element={<Home />} /> */}
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
