@@ -17,6 +17,69 @@ This Project is part of a course work of Application Development Lab in IIT Madr
 - ✅ **Profile Management**: Users can update their profiles, including bio and profile pictures.
 - ✅ **Responsive Design**: The platform is designed to be responsive and accessible on all devices.
 
+## How to Run using Docker Compose
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Steps
+1. **Create the Environment File**:
+   Create a `.env` file in the `server` directory. You can copy the example below:
+   ```env
+   PORT=3000
+   DB_HOST=postgres
+   DB_PORT=5432
+   DB_USERNAME=postgres
+   DB_PASSWORD=postgres
+   DB_NAME=adl_project
+   JWT_SECRET=your_super_secret_jwt_key
+   REFRESH_TOKEN_SECRET=your_super_secret_refresh_key
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   ADMIN_EMAIL=admin@example.com
+   AWS_ACCESS_KEY_ID=your_aws_access_key
+   AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+   AWS_REGION=your_aws_region
+   AWS_BUCKET_NAME=your_s3_bucket_name
+   CLIENT_URL=http://localhost:5500
+   ```
+   > **Note**: `DB_HOST` must be set to `postgres` (the service name in docker-compose) and `CLIENT_URL` to `http://localhost:5500`.
+2. Run the following command in the root directory:
+   ```bash
+   docker compose up --build
+   ```
+3. The services will be available at:
+   - **Client**: http://localhost:5500
+   - **Server**: http://localhost:3000
+   - **Database**: localhost:5433
+
+### Useful Docker Commands
+
+- **Run in background (detached mode)**:
+  ```bash
+  docker compose up -d
+  ```
+
+- **View Logs**:
+  ```bash
+  # Follow logs for all services
+  docker compose logs -f
+
+  # Follow logs for a specific service (e.g., server)
+  docker compose logs -f server
+  ```
+
+- **Rebuild Containers**:
+  ```bash
+  docker compose up -d --build
+  ```
+
+- **Stop Services**:
+  ```bash
+  docker compose down
+  ```
+
 
 ## How to run the project (Development)
 
@@ -105,3 +168,7 @@ The application should now be running at `http://localhost:5173`.
 - **TypeORM**: TypeScript ORM for interacting with the PostgreSQL database using entities and relationships.
 - **PostgreSQL**: Reliable relational database system.
 - **AWS S3 Integration**: Secure and scalable storage for user-uploaded content (images, videos).
+
+### DevOps
+- **Docker Support**: Fully dockerized application with Docker Compose for easy setup and deployment.
+- **Nginx**: Serves the frontend application with proper routing configuration.

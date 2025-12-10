@@ -5,11 +5,13 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import routes from './routes';
 
+import { config } from './config';
+
 const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: '*',
+  origin: [config.frontendHost, 'http://localhost:5500', 'http://localhost:5173'],
   credentials: true,
 }));
 app.use(helmet());

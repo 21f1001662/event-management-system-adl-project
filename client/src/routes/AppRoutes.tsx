@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Home from '../pages/Home';
+
 import Login from '../pages/Login';
 import OrganizerRegister from '../pages/OrganizerRegister';
 import AdminDashboard from '@/pages/AdminDashboard';
