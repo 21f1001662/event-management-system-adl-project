@@ -42,4 +42,23 @@ export class UserController {
       res.status(400).json({ message: error.message });
     }
   }
+  static async updateProfile(req: Request, res: Response) {
+    try {
+      const userId = (req as any).user.id;
+      const { name, bio, profile_picture } = req.body;
+
+      const updatedUser = await UserController.userService.updateUser(userId, {
+        name,
+        bio,
+        profile_picture
+      });
+
+      res.json({
+        message: 'Profile updated successfully',
+        data: updatedUser,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }

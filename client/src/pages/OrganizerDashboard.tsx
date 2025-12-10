@@ -7,6 +7,7 @@ import { useGetAllEvents } from '@/hooks/api/event';
 import './OrganizerDashboard.css';
 import { Menu, X, Calendar, User, LogOut, Image as ImageIcon, ClipboardCheck } from 'lucide-react';
 import MarkAttendance from '@/components/organizer/MarkAttendance';
+import ProfileUpdate from '@/components/profile/ProfileUpdate';
 
 const OrganizerDashboard = () => {
     const dispatch = useDispatch();
@@ -190,28 +191,7 @@ const OrganizerDashboard = () => {
                 ) : (
                     <div className="content-header">
                         <h1 className="page-title">Profile</h1>
-                        <div style={{ marginTop: '20px', background: 'white', padding: '30px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                            <div className="mb-4">
-                                <p className="mb-2"><strong>Name:</strong> {user?.name}</p>
-                                <p className="mb-2"><strong>Email:</strong> {user?.email}</p>
-                                <p className="mb-2"><strong>Role:</strong> {user?.roles.join(', ')}</p>
-                                {user?.roles.includes('organizer') && (
-                                    <p className="mb-2">
-                                        <strong>Status:</strong>
-                                        <span style={{
-                                            marginLeft: '8px',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            backgroundColor: user.verified ? '#c6f6d5' : '#fed7d7',
-                                            color: user.verified ? '#22543d' : '#822727',
-                                            fontWeight: 'bold'
-                                        }}>
-                                            {user.verified ? 'Verified' : 'Unverified'}
-                                        </span>
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+                        <ProfileUpdate />
                     </div>
                 )}
             </main>

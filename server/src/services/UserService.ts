@@ -75,7 +75,7 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async updateUser(id: string, data: { name?: string; email?: string }) {
+  async updateUser(id: string, data: { name?: string; email?: string; bio?: string; profile_picture?: string }) {
     await this.userRepository.update(id, data);
     return await this.getUser({ id });
   }

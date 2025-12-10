@@ -1,4 +1,4 @@
-import { getAllUsers, getOwnProfile, verifyOrganizer } from "@/api/user";
+import { getAllUsers, getOwnProfile, verifyOrganizer, updateProfile } from "@/api/user";
 import type { GetAllUsersParams, GetAllUsersResponseDto, UserResponseDto } from "@/api/user/user.dto";
 import type { ApiErrorShape } from "@/types/common";
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
@@ -24,6 +24,16 @@ export function useVerifyOrganizer() {
         mutationFn: verifyOrganizer,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
+        },
+    });
+}
+
+export function useUpdateProfile() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: updateProfile,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
         },
     });
 }

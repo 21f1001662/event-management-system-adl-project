@@ -56,6 +56,13 @@ export class User extends BaseEntity {
   bio?: string;
 
   @Column({
+    name: 'profile_picture',
+    type: 'varchar',
+    nullable: true,
+  })
+  profile_picture?: string;
+
+  @Column({
     name: 'verified',
     type: 'boolean',
     default: false,

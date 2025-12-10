@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logout } from '@/store/auth/authSlice';
-import type { RootState } from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, Calendar, User, LogOut, Ticket } from 'lucide-react';
 import UserEvents from '@/components/dashboard/user/UserEvents';
 import UserBookings from '@/components/dashboard/user/UserBookings';
+import ProfileUpdate from '@/components/profile/ProfileUpdate';
 import './OrganizerDashboard.css'; // Reusing Organizer styles for now
 
 const UserDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state: RootState) => state.auth.user);
 
     // UI State
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -79,13 +78,7 @@ const UserDashboard = () => {
                 {activeTab === 'profile' && (
                     <div className="content-header">
                         <h1 className="page-title">Profile</h1>
-                        <div style={{ marginTop: '20px', background: 'white', padding: '30px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                            <div className="mb-4">
-                                <p className="mb-2"><strong>Name:</strong> {user?.name}</p>
-                                <p className="mb-2"><strong>Email:</strong> {user?.email}</p>
-                                <p className="mb-2"><strong>Role:</strong> {user?.roles.join(', ')}</p>
-                            </div>
-                        </div>
+                        <ProfileUpdate />
                     </div>
                 )}
             </main>

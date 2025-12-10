@@ -4,7 +4,8 @@ import { logout } from '@/store/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllUsers, useVerifyOrganizer } from '@/hooks/api/user';
 import './AdminDashboard.css';
-import { Menu, X, Users, Calendar, LogOut } from 'lucide-react';
+import { Menu, X, Users, Calendar, LogOut, User } from 'lucide-react';
+import ProfileUpdate from '@/components/profile/ProfileUpdate';
 
 const AdminDashboard = () => {
     const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const AdminDashboard = () => {
 
     // UI State
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<'users' | 'events'>('users');
+    const [activeTab, setActiveTab] = useState<'users' | 'events' | 'profile'>('users');
 
     // Users Filter State
     const [page, setPage] = useState(1);
@@ -79,6 +80,13 @@ const AdminDashboard = () => {
                     >
                         <Calendar size={20} />
                         Events
+                    </div>
+                    <div
+                        className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
+                        onClick={() => { setActiveTab('profile'); setSidebarOpen(false); }}
+                    >
+                        <User size={20} />
+                        Profile
                     </div>
                 </nav>
 
@@ -203,10 +211,15 @@ const AdminDashboard = () => {
                             </div>
                         )}
                     </>
-                ) : (
+                ) : activeTab === 'events' ? (
                     <div className="content-header">
                         <h1 className="page-title">Events Management</h1>
                         <p style={{ marginTop: '20px', color: '#666' }}>Events management module coming soon...</p>
+                    </div>
+                ) : (
+                    <div className="content-header">
+                        <h1 className="page-title">Profile</h1>
+                        <ProfileUpdate />
                     </div>
                 )}
             </main>

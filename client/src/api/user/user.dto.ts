@@ -4,6 +4,7 @@ export interface UserDto {
     email: string;
     roles: string[];
     bio?: string;
+    profile_picture?: string;
     verified: boolean;
     created_at: string;
     updated_at: string;

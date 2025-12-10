@@ -14,3 +14,8 @@ export async function getAllUsers(params: GetAllUsersParams): Promise<GetAllUser
 export async function verifyOrganizer(userId: string): Promise<void> {
     await apiClient.post(`/user/${userId}/verify`);
 }
+
+export async function updateProfile(data: { name?: string; bio?: string; profile_picture?: string }): Promise<UserResponseDto> {
+    const response = await apiClient.put<UserResponseDto>("/user/profile", data);
+    return response.data;
+}
