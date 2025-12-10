@@ -27,6 +27,8 @@ const AdminDashboard = () => {
     const [eventsPage, setEventsPage] = useState(1);
     const [eventsSearch, setEventsSearch] = useState('');
     const [debouncedEventsSearch, setDebouncedEventsSearch] = useState('');
+    const [eventsSortBy, setEventsSortBy] = useState('created_at');
+    const [eventsFilterStatus, setEventsFilterStatus] = useState('');
 
     // Debounce search
     useEffect(() => {
@@ -60,6 +62,9 @@ const AdminDashboard = () => {
         page: eventsPage,
         limit: 10,
         search: debouncedEventsSearch,
+        orderBy: eventsSortBy,
+        order: 'DESC',
+        approved: eventsFilterStatus || undefined,
     });
 
     const { mutate: toggleApproval } = useToggleEventApproval();
@@ -253,6 +258,23 @@ const AdminDashboard = () => {
                                     onChange={(e) => setEventsSearch(e.target.value)}
                                 />
                             </div>
+                            <div className="filter-box" style={{ display: 'flex', gap: '10px' }}>
+                                <select
+                                    value={eventsSortBy}
+                                    onChange={(e) => setEventsSortBy(e.target.value)}
+                                >
+                                    <option value="created_at">Recent</option>
+                                    <option value="flag_count">Flagged Count</option>
+                                </select>
+                                <select
+                                    value={eventsFilterStatus}
+                                    onChange={(e) => { setEventsFilterStatus(e.target.value); setEventsPage(1); }}
+                                >
+                                    <option value="">All Status</option>
+                                    <option value="true">Approved</option>
+                                    <option value="false">Unapproved</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div className="table-container">
@@ -264,6 +286,7 @@ const AdminDashboard = () => {
                                         <tr>
                                             <th>Event Name</th>
                                             <th>Description</th>
+                                            <th>Created At</th>
                                             <th>Booked / Max</th>
                                             <th>Flagged</th>
                                             <th>Organizer</th>
@@ -284,6 +307,7 @@ const AdminDashboard = () => {
                                                         ? `${event.short_description.substring(0, 30)}...`
                                                         : event.short_description}
                                                 </td>
+                                                <td>{new Date(event.created_at).toLocaleDateString()}</td>
                                                 <td>{event.attendees_count} / {event.capacity}</td>
                                                 <td>{event.flag_count}</td>
                                                 <td>
@@ -309,7 +333,7 @@ const AdminDashboard = () => {
                                         ))}
                                         {eventsData?.data.events.length === 0 && (
                                             <tr>
-                                                <td colSpan={7} style={{ textAlign: 'center' }}>No events found</td>
+                                                <td colSpan={8} style={{ textAlign: 'center' }}>No events found</td>
                                             </tr>
                                         )}
                                     </tbody>

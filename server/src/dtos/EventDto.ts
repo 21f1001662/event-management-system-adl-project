@@ -138,4 +138,8 @@ export class GetEventsQueryDto {
     @IsOptional()
     @IsString() // Ideally should be an enum 'ASC' | 'DESC' but string is fine for query param basic validation
     order?: 'ASC' | 'DESC';
+
+    @IsOptional()
+    @IsString()
+    approved?: string;
 }

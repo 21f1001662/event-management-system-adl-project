@@ -44,6 +44,11 @@ export class EventService {
             qb.andWhere('event.organizer_id = :organizerId', { organizerId });
         }
 
+        if (query.approved !== undefined) {
+            const isApproved = query.approved === 'true';
+            qb.andWhere('event.approved = :approved', { approved: isApproved });
+        }
+
         qb = addOrdering(qb, orderBy || 'date', order || 'ASC');
         qb = addPagination(qb, limit, skip);
 

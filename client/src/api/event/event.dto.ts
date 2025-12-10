@@ -43,6 +43,7 @@ export interface GetEventsParams {
     organizerId?: string;
     orderBy?: string;
     order?: 'ASC' | 'DESC';
+    approved?: string;
 }
 
 export interface GetEventsResponse {
