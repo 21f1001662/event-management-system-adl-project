@@ -97,4 +97,10 @@ export class EventService {
 
         return await this.eventRepository.remove(event);
     }
+
+    async toggleApproval(id: string) {
+        const event = await this.getEventById(id);
+        event.approved = !event.approved;
+        return await this.eventRepository.save(event);
+    }
 }

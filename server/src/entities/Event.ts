@@ -75,6 +75,9 @@ export class Event extends BaseEntity {
     @Column({ type: 'float', default: 0 })
     avg_rating: number;
 
+    @Column({ type: 'boolean', default: true })
+    approved: boolean;
+
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'organizer_id' })
     organizer: User;

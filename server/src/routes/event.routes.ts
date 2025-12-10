@@ -32,6 +32,13 @@ router.put(
     EventController.updateEvent
 );
 
+router.patch(
+    '/:id/approval',
+    authenticate,
+    authorize([UserRole.ADMIN]),
+    EventController.toggleApproval
+);
+
 router.delete(
     '/:id',
     authenticate,

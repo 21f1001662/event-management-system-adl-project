@@ -87,4 +87,21 @@ export class EventController {
             }
         }
     }
+
+    static async toggleApproval(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const event = await EventController.eventService.toggleApproval(id);
+            res.json({
+                message: 'Event approval status updated successfully',
+                data: event,
+            });
+        } catch (error: any) {
+            if (error.message === 'Event not found') {
+                res.status(404).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: error.message });
+            }
+        }
+    }
 }
