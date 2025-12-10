@@ -76,10 +76,11 @@ const UserDashboard = () => {
                 {activeTab === 'events' && <UserEvents />}
                 {activeTab === 'bookings' && <UserBookings />}
                 {activeTab === 'profile' && (
-                    <div className="content-header">
-                        <h1 className="page-title">Profile</h1>
+                    <>
+                        <div className="content-header">
+                        </div>
                         <ProfileUpdate />
-                    </div>
+                    </>
                 )}
             </main>
         </div>

@@ -218,7 +218,6 @@ const AdminDashboard = () => {
                     </div>
                 ) : (
                     <div className="content-header">
-                        <h1 className="page-title">Profile</h1>
                         <ProfileUpdate />
                     </div>
                 )}

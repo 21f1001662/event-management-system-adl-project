@@ -2,6 +2,7 @@
     background: white;
     border-radius: 12px;
     padding: 30px;
+    flex: 1;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     max-width: 500px;
     margin: 0 auto 30px;

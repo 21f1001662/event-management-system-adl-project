@@ -189,10 +189,12 @@ const OrganizerDashboard = () => {
                 ) : activeTab === 'mark-attendance' ? (
                     <MarkAttendance />
                 ) : (
-                    <div className="content-header">
-                        <h1 className="page-title">Profile</h1>
+                    <>
+                        <div className="content-header" style={{ justifyContent: 'center' }}>
+
+                        </div>
                         <ProfileUpdate />
-                    </div>
+                    </>
                 )}
             </main>
         </div>
