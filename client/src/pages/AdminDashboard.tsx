@@ -273,7 +273,11 @@ const AdminDashboard = () => {
                                     </thead>
                                     <tbody>
                                         {eventsData?.data.events.map((event) => (
-                                            <tr key={event.id}>
+                                            <tr
+                                                key={event.id}
+                                                onClick={() => navigate(`/admin/events/${event.id}`)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
                                                 <td>{event.title}</td>
                                                 <td title={event.short_description}>
                                                     {event.short_description.length > 30
@@ -291,7 +295,7 @@ const AdminDashboard = () => {
                                                         {event.approved ? 'Approved' : 'Pending'}
                                                     </span>
                                                 </td>
-                                                <td>
+                                                <td onClick={(e) => e.stopPropagation()}>
                                                     <label className="toggle-switch">
                                                         <input
                                                             type="checkbox"

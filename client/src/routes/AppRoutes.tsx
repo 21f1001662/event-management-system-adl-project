@@ -10,6 +10,7 @@ import EventDetails from '@/pages/EventDetails';
 import EditEvent from '@/pages/EditEvent';
 import UserDashboard from '@/pages/UserDashboard';
 import UserEventDetails from '@/components/dashboard/user/UserEventDetails';
+import AdminEventDetails from '@/pages/AdminEventDetails';
 import type { RootState } from '@/store';
 
 const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: string[] }) => {
@@ -47,6 +48,7 @@ export default function AppRoutes() {
 
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/events/:id" element={<AdminEventDetails />} />
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={['organizer']} />}>

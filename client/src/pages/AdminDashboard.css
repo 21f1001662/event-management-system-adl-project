@@ -192,8 +192,8 @@
     font-weight: 500;
 }
 
-.status-verified { background-color: #c6f6d5; color: #22543d; }
-.status-unverified { background-color: #fed7d7; color: #822727; }
+.status-verified { background-color: #49b97f; color: #49b97f; border: 1px solid #a7f3d0; }
+.status-unverified { background-color: #de5a5a; color: #991b1b; border: 1px solid #de5a5a; }
 
 /* Toggle Switch */
 .toggle-switch {
