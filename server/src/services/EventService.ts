@@ -30,7 +30,7 @@ export class EventService {
         ]);
 
         if (search) {
-            qb.andWhere('(event.title ILIKE :search OR event.short_description ILIKE :search)', { search: `%${search}%` });
+            qb.andWhere('(event.title ILIKE :search OR event.short_description ILIKE :search OR event.location ILIKE :search)', { search: `%${search}%` });
         }
 
         if (category) {
@@ -48,6 +48,14 @@ export class EventService {
         if (query.approved !== undefined) {
             const isApproved = query.approved === 'true';
             qb.andWhere('event.approved = :approved', { approved: isApproved });
+        }
+
+        if (query.startDate) {
+            qb.andWhere('event.date >= :startDate', { startDate: query.startDate });
+        }
+
+        if (query.endDate) {
+            qb.andWhere('event.date <= :endDate', { endDate: query.endDate });
         }
 
         qb = addOrdering(qb, orderBy || 'date', order || 'ASC');

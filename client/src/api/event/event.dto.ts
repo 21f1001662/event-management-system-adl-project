@@ -44,6 +44,8 @@ export interface GetEventsParams {
     orderBy?: string;
     order?: 'ASC' | 'DESC';
     approved?: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 export interface GetEventsResponse {

@@ -142,4 +142,12 @@ export class GetEventsQueryDto {
     @IsOptional()
     @IsString()
     approved?: string;
+
+    @IsOptional()
+    @IsDateString()
+    startDate?: string;
+
+    @IsOptional()
+    @IsDateString()
+    endDate?: string;
 }
