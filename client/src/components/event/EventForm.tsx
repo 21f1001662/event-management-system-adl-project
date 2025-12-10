@@ -23,7 +23,8 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
         category: EventCategory.TECH,
         capacity: 100,
         image_url: '',
-        video_url: ''
+        video_url: '',
+        allow_waitlist: false
     });
 
     const [uploadingField, setUploadingField] = useState<'image' | 'video' | null>(null);
@@ -84,7 +85,8 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
             date: dateTime,
             capacity: Number(formData.capacity),
             video_url: formData.video_url || null,
-            image_url: formData.image_url || null
+            image_url: formData.image_url || null,
+            allow_waitlist: formData.allow_waitlist
         });
     };
 
@@ -186,6 +188,22 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
                         onChange={handleInputChange}
                     />
                 </div>
+            </div>
+
+            <div className="form-group">
+                <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                    <input
+                        type="checkbox"
+                        name="allow_waitlist"
+                        checked={formData.allow_waitlist}
+                        onChange={(e) => setFormData(prev => ({ ...prev, allow_waitlist: e.target.checked }))}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontSize: '1rem', color: '#2d3748' }}>Allow Waitlist Booking</span>
+                </label>
+                <p style={{ fontSize: '0.85rem', color: '#718096', marginTop: '5px', marginLeft: '28px' }}>
+                    If enabled, users can join a waitlist when the event is fully booked.
+                </p>
             </div>
 
             <div className="form-group">

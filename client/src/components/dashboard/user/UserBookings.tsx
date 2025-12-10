@@ -6,6 +6,8 @@ import { X, Maximize2, MapPin, Calendar, Clock } from 'lucide-react';
 import ReviewModal from '@/components/review/ReviewModal';
 import './UserBookings.css';
 
+import { useCancelTicket } from '@/hooks/api/booking';
+
 const UserBookings = () => {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -14,6 +16,29 @@ const UserBookings = () => {
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
     const [reviewEventId, setReviewEventId] = useState('');
     const [existingReview, setExistingReview] = useState<any>(null);
+
+    // Cancellation State
+    const [ticketToCancel, setTicketToCancel] = useState<any>(null);
+    const { mutate: cancelTicket, isPending: isCancelling } = useCancelTicket();
+
+    const handleCancelClick = (ticket: any) => {
+        setTicketToCancel(ticket);
+    };
+
+    const confirmCancellation = () => {
+        if (!ticketToCancel) return;
+
+        cancelTicket(ticketToCancel.id, {
+            onSuccess: () => {
+                setTicketToCancel(null);
+                fetchBookings(); // Refresh list
+                alert('Ticket cancelled successfully.');
+            },
+            onError: (error: any) => {
+                alert('Failed to cancel ticket: ' + (error.response?.data?.message || error.message));
+            }
+        });
+    };
 
     useEffect(() => {
         fetchBookings();
@@ -122,6 +147,12 @@ const UserBookings = () => {
                             <span className="label">Ticket #</span>
                             <span className="value">{ticket.ticket_number}</span>
                         </div>
+                        {ticket.status === 'waitlist' && ticket.waitlist_position && (
+                            <div className="ticket-number" style={{ marginTop: '5px' }}>
+                                <span className="label">Waitlist #</span>
+                                <span className="value">#{ticket.waitlist_position}</span>
+                            </div>
+                        )}
                         {!isModal && (
                             <div className="ticket-actions-booking">
                                 {ticket.attendance === 'Present' && (
@@ -133,6 +164,28 @@ const UserBookings = () => {
                                         }}
                                     >
                                         {hasReview ? 'View Review' : 'Add Review'}
+                                    </button>
+                                )}
+                                {ticket.status !== 'cancelled' && ticket.attendance !== 'Present' && (
+                                    <button
+                                        className="cancel-btn-small"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCancelClick(ticket);
+                                        }}
+                                        style={{
+                                            padding: '6px 12px',
+                                            backgroundColor: '#fed7d7',
+                                            color: '#c53030',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            marginRight: '8px'
+                                        }}
+                                    >
+                                        Cancel
                                     </button>
                                 )}
                                 <button className="expand-btn" onClick={() => setSelectedTicket(ticket)}>
@@ -191,6 +244,30 @@ const UserBookings = () => {
                 existingReview={existingReview}
                 onSuccess={handleReviewSuccess}
             />
+
+            {ticketToCancel && (
+                <div className="ticket-modal-overlay" onClick={() => setTicketToCancel(null)}>
+                    <div className="ticket-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h2 style={{ marginBottom: '15px' }}>Cancel Ticket</h2>
+                        <p style={{ marginBottom: '20px' }}>Are you sure you want to cancel your ticket for <strong>{ticketToCancel.event.title}</strong>?</p>
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                            <button
+                                onClick={() => setTicketToCancel(null)}
+                                style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #e2e8f0', background: 'white', cursor: 'pointer' }}
+                            >
+                                Keep Ticket
+                            </button>
+                            <button
+                                onClick={confirmCancellation}
+                                disabled={isCancelling}
+                                style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#e53e3e', color: 'white', cursor: 'pointer' }}
+                            >
+                                {isCancelling ? 'Cancelling...' : 'Confirm Cancel'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

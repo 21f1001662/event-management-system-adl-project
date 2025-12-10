@@ -197,6 +197,9 @@
     position: relative;
     width: 100%;
     max-width: 400px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
     animation: slideUp 0.3s ease-out;
 }
 
