@@ -78,7 +78,7 @@
     background-color: #4c51bf;
     color: white;
     padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 9999px;
     border: none;
     font-weight: 600;
     cursor: pointer;
@@ -94,7 +94,7 @@
     background-color: #fff;
     color: #e53e3e;
     padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 9999px;
     border: 1px solid #e53e3e;
     font-weight: 600;
     cursor: pointer;

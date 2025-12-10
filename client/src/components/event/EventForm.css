@@ -84,12 +84,12 @@
     z-index: 100;
 }
 
-.submit-btn {
+.event-form-submit-btn {
     background-color: #4c51bf;
     color: white;
     border: none;
     padding: 12px 40px;
-    border-radius: 8px;
+    border-radius: 9999px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
@@ -97,13 +97,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    width: auto;
+    min-width: 200px;
+    justify-content: center;
 }
 
-.submit-btn:hover {
+.event-form-submit-btn:hover {
     background-color: #434190;
 }
 
-.submit-btn:disabled {
+.event-form-submit-btn:disabled {
     background-color: #a0aec0;
     cursor: not-allowed;
 }

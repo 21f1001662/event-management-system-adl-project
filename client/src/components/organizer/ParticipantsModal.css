@@ -168,7 +168,7 @@
 .pagination-btn {
     background: none;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 9999px;
     padding: 4px 8px;
     cursor: pointer;
     display: flex;

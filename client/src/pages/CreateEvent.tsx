@@ -19,7 +19,7 @@ const CreateEvent = () => {
 
     return (
         <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px' }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '30px', color: '#1a202c' }}>Create New Event</h1>
+            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '30px', color: '#1a202c', textAlign: 'center' }}>Create New Event</h1>
             <EventForm
                 onSubmit={handleSubmit}
                 isSubmitting={isCreating}

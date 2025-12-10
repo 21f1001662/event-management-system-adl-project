@@ -243,7 +243,7 @@ const EventForm = ({ initialData, onSubmit, isSubmitting, submitLabel }: EventFo
 
             <div className="sticky-footer">
                 <button
-                    className="submit-btn"
+                    className="event-form-submit-btn"
                     onClick={handleSubmit}
                     disabled={isSubmitting || uploading}
                 >

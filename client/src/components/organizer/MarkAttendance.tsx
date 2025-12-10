@@ -22,7 +22,7 @@ const MarkAttendance: React.FC = () => {
             const data = await getTicketByNumber(Number(number));
             setTicketDetails(data);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Error fetching ticket details');
+            setError(err.response?.data?.message || 'Ticket Not found');
         } finally {
             setLoading(false);
         }

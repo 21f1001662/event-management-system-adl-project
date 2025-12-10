@@ -200,7 +200,7 @@
     color: white;
     border: none;
     padding: 12px 40px;
-    border-radius: 8px;
+    border-radius: 9999px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
