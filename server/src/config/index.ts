@@ -28,4 +28,5 @@ export const config = {
     region: process.env.AWS_REGION || 'us-east-1',
     bucket: process.env.S3_BUCKET || '',
   },
+  adminEmail: process.env.ADMIN_EMAIL,
 };

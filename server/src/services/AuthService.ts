@@ -24,12 +24,25 @@ export class AuthService {
     let user = await this.userService.getUser({ email: payload.email });
 
     if (!user) {
+      const roles = [UserRole.USER];
+      if (config.adminEmail && payload.email === config.adminEmail) {
+        roles.push(UserRole.ADMIN);
+      }
+
       user = await this.userService.createUser({
         name: payload.name || 'User',
         email: payload.email,
+        roles,
       });
     } else {
-      // Update name if changed? Optional.
+      if (config.adminEmail && payload.email === config.adminEmail && !user.roles.includes(UserRole.ADMIN)) {
+        const newRoles = [...user.roles, UserRole.ADMIN];
+        const updatedUser = await this.userService.updateUser(user.id, { roles: newRoles });
+        if (!updatedUser) {
+          throw new Error('Failed to update user roles');
+        }
+        user = updatedUser;
+      }
     }
 
     const tokens = this.signPayload({
