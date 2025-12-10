@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '@/store/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllUsers, useVerifyOrganizer } from '@/hooks/api/user';
+import { useGetAllEvents, useToggleEventApproval } from '@/hooks/api/event';
 import './AdminDashboard.css';
 import { Menu, X, Users, Calendar, LogOut, User } from 'lucide-react';
 import ProfileUpdate from '@/components/profile/ProfileUpdate';
@@ -22,6 +23,11 @@ const AdminDashboard = () => {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState('');
 
+    // Events Filter State
+    const [eventsPage, setEventsPage] = useState(1);
+    const [eventsSearch, setEventsSearch] = useState('');
+    const [debouncedEventsSearch, setDebouncedEventsSearch] = useState('');
+
     // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -30,6 +36,15 @@ const AdminDashboard = () => {
         }, 500);
         return () => clearTimeout(timer);
     }, [search]);
+
+    // Debounce events search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedEventsSearch(eventsSearch);
+            setEventsPage(1);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [eventsSearch]);
 
     // Data Fetching
     const { data: usersData, isLoading } = useGetAllUsers({
@@ -41,6 +56,14 @@ const AdminDashboard = () => {
 
     const { mutate: verifyOrganizer } = useVerifyOrganizer();
 
+    const { data: eventsData, isLoading: isEventsLoading } = useGetAllEvents({
+        page: eventsPage,
+        limit: 10,
+        search: debouncedEventsSearch,
+    });
+
+    const { mutate: toggleApproval } = useToggleEventApproval();
+
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
@@ -48,6 +71,10 @@ const AdminDashboard = () => {
 
     const handleVerifyToggle = (userId: string) => {
         verifyOrganizer(userId);
+    };
+
+    const handleApprovalToggle = (eventId: string) => {
+        toggleApproval(eventId);
     };
 
     return (
@@ -212,10 +239,103 @@ const AdminDashboard = () => {
                         )}
                     </>
                 ) : activeTab === 'events' ? (
-                    <div className="content-header">
-                        <h1 className="page-title">Events Management</h1>
-                        <p style={{ marginTop: '20px', color: '#666' }}>Events management module coming soon...</p>
-                    </div>
+                    <>
+                        <div className="content-header">
+                            <h1 className="page-title">Events Management</h1>
+                        </div>
+
+                        <div className="controls-section">
+                            <div className="search-box">
+                                <input
+                                    type="text"
+                                    placeholder="Search events by title..."
+                                    value={eventsSearch}
+                                    onChange={(e) => setEventsSearch(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="table-container">
+                            {isEventsLoading ? (
+                                <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
+                            ) : (
+                                <table className="users-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Event Name</th>
+                                            <th>Description</th>
+                                            <th>Booked / Max</th>
+                                            <th>Flagged</th>
+                                            <th>Organizer</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {eventsData?.data.events.map((event) => (
+                                            <tr key={event.id}>
+                                                <td>{event.title}</td>
+                                                <td title={event.short_description}>
+                                                    {event.short_description.length > 30
+                                                        ? `${event.short_description.substring(0, 30)}...`
+                                                        : event.short_description}
+                                                </td>
+                                                <td>{event.attendees_count} / {event.capacity}</td>
+                                                <td>{event.flag_count}</td>
+                                                <td>
+                                                    <div>{event.organizer?.name}</div>
+                                                    <div style={{ fontSize: '0.8em', color: '#666' }}>{event.organizer?.email}</div>
+                                                </td>
+                                                <td>
+                                                    <span className={`status-badge status-${event.approved ? 'verified' : 'unverified'}`}>
+                                                        {event.approved ? 'Approved' : 'Pending'}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <label className="toggle-switch">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={event.approved}
+                                                            onChange={() => handleApprovalToggle(event.id)}
+                                                        />
+                                                        <span className="slider"></span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {eventsData?.data.events.length === 0 && (
+                                            <tr>
+                                                <td colSpan={7} style={{ textAlign: 'center' }}>No events found</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+
+                        {/* Pagination */}
+                        {eventsData && eventsData.data.totalPages > 1 && (
+                            <div className="pagination">
+                                <button
+                                    className="pagination-btn"
+                                    disabled={eventsPage === 1}
+                                    onClick={() => setEventsPage(p => Math.max(1, p - 1))}
+                                >
+                                    Previous
+                                </button>
+                                <span className="page-info">
+                                    Page {eventsData.data.page} of {eventsData.data.totalPages}
+                                </span>
+                                <button
+                                    className="pagination-btn"
+                                    disabled={eventsData.data.page === eventsData.data.totalPages}
+                                    onClick={() => setEventsPage(p => Math.min(eventsData.data.totalPages, p + 1))}
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className="content-header">
                         <ProfileUpdate />

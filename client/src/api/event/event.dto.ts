@@ -23,6 +23,13 @@ export interface EventDto {
     capacity: number;
     attendees_count: number;
     organizer_id: string;
+    organizer: {
+        id: string;
+        name: string;
+        email: string;
+    };
+    approved: boolean;
+    flag_count: number;
     created_at: string;
     updated_at: string;
 }

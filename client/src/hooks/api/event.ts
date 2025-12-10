@@ -43,3 +43,15 @@ export function useUpdateEvent() {
         },
     });
 }
+
+import { toggleEventApproval } from "@/api/event";
+
+export function useToggleEventApproval() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: toggleEventApproval,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["events"] });
+        },
+    });
+}

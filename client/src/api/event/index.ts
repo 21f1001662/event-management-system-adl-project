@@ -35,3 +35,8 @@ export async function markAttendance(ticketNumber: number, status: string): Prom
     const { data } = await apiClient.put(`/bookings/attendance`, { ticket_number: ticketNumber, status });
     return data.data;
 }
+
+export async function toggleEventApproval(id: string): Promise<any> {
+    const { data } = await apiClient.patch(`/events/${id}/approval`);
+    return data.data;
+}
