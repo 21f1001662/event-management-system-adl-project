@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { registerOrganizer } from '@/api/auth';
 import { setTokens, setUser } from '@/store/auth/authSlice';
+import { Check, ArrowLeft } from 'lucide-react';
+import './OrganizerRegister.css';
 
 const OrganizerRegister = () => {
     const navigate = useNavigate();
@@ -11,56 +13,83 @@ const OrganizerRegister = () => {
     const [bio, setBio] = useState('');
     const [idToken, setIdToken] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleRegister = async () => {
         if (!idToken || !bio) return;
+        setIsSubmitting(true);
         try {
             const response = await registerOrganizer({ id_token: idToken, bio });
             dispatch(setTokens(response.data.tokens));
             dispatch(setUser(response.data.user));
             navigate('/organizer');
         } catch (err: any) {
-            setError(err.message || 'Registration failed');
+            setError(err.message || 'Registration failed. Please try again.');
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <div className="p-8 bg-white rounded shadow-md w-96">
-                <h1 className="mb-4 text-2xl font-bold text-center">Organizer Registration</h1>
+        <div className="organizer-register-container">
+            <div className="organizer-register-card">
+                <h1 className="organizer-register-title">Become an Organizer</h1>
+                <p className="organizer-register-subtitle">
+                    {!idToken
+                        ? "Sign in with Google to verify your identity"
+                        : "Tell us a bit about yourself to complete registration"}
+                </p>
 
-                {error && <p className="mb-4 text-red-500">{error}</p>}
+                <div className="step-indicator">
+                    <div className={`step-dot ${!idToken ? 'active' : ''}`}></div>
+                    <div className={`step-dot ${idToken ? 'active' : ''}`}></div>
+                </div>
+
+                {error && <div className="error-message">{error}</div>}
 
                 {!idToken ? (
-                    <div className="flex justify-center">
+                    <div className="google-login-wrapper">
                         <GoogleLogin
                             onSuccess={credentialResponse => {
                                 if (credentialResponse.credential) {
                                     setIdToken(credentialResponse.credential);
+                                    setError(null);
                                 }
                             }}
                             onError={() => {
-                                setError('Google Login Failed');
+                                setError('Google Login Failed. Please try again.');
                             }}
+                            useOneTap
                         />
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-4">
-                        <p className="text-green-600 text-center">Google Account Verified!</p>
+                    <div className="registration-form">
+                        <div className="verified-badge">
+                            <Check size={16} />
+                            Google Account Verified
+                        </div>
                         <textarea
-                            placeholder="Tell us about yourself (Bio)"
-                            className="w-full p-2 border rounded"
+                            placeholder="Write a short bio about yourself and the events you plan to organize..."
+                            className="bio-textarea"
                             value={bio}
                             onChange={(e) => setBio(e.target.value)}
+                            disabled={isSubmitting}
                         />
                         <button
                             onClick={handleRegister}
-                            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                            className="register-btn"
+                            disabled={!bio.trim() || isSubmitting}
                         >
-                            Register
+                            {isSubmitting ? 'Registering...' : 'Complete Registration'}
                         </button>
                     </div>
                 )}
+
+                <Link to="/login" className="back-link">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <ArrowLeft size={16} />
+                        Back to Login
+                    </div>
+                </Link>
             </div>
         </div>
     );

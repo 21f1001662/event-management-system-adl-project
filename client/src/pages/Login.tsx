@@ -2,7 +2,7 @@ import { useLoginWithGoogle } from '@/hooks/api/auth';
 import { setTokens, setUser } from '@/store/auth/authSlice';
 import { GoogleLogin } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Login() {
     const dispatch = useDispatch();
@@ -56,6 +56,13 @@ export default function Login() {
                             }}
                         />
                     )}
+                </div>
+
+                <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid #e2e8f0' }}>
+                    <p style={{ color: '#718096', fontSize: '0.9rem', marginBottom: '8px' }}>Want to host events?</p>
+                    <Link to="/organizer/register" style={{ color: '#4c51bf', textDecoration: 'none', fontWeight: '600' }}>
+                        Register as an Organizer
+                    </Link>
                 </div>
             </div>
         </div>
