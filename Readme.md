@@ -1,9 +1,12 @@
 # Event Management System
 
 ## About the project
-The Event Management System is a comprehensive platform designed to streamline the organization and discovery of events. It serves three distinct user roles: **Admins**, **Event Organizers**, and **Attendees**. The platform empowers organizers to manage their events efficiently while providing attendees with a seamless experience to discover, book, and review events.
+The Event Management System is a platform designed to streamline the organization and discovery of events. It serves three distinct user roles: **Admins**, **Event Organizers**, and **Attendees**. The platform lets organizers to manage their events efficiently while providing attendees with a seamless experience to discover, book, and review events.
 
 This Project is part of a course work of Application Development Lab in IIT Madras BS Degree Programme.
+
+## Database Schema
+The database schema is built on PostgreSQL using TypeORM entities to ensure data integrity and efficient querying. It centers around the **User** entity, which supports multiple roles (Admin, Organizer, Attendee), and the **Event** entity, which stores comprehensive event details and media links. The **EventAttendee** entity manages the relationship between users and events for bookings and waitlists, while the **Review** entity links users to events for feedback and ratings.
 
 ## Functionality
 - ✅ **Admin Dashboard**: Manage users, approve organizer registrations, and handle reported events to ensure platform integrity.
